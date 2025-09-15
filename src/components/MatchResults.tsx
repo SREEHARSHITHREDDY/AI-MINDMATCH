@@ -108,7 +108,7 @@ export function MatchResults({ matches, userName, onBack }: MatchResultsProps) {
           </div>
           
           <div className="flex justify-center gap-4">
-            <Button variant="match" size="lg">
+            <Button variant="professional" size="lg">
               <Users className="mr-2 h-5 w-5" />
               Connect Now
             </Button>
@@ -202,7 +202,7 @@ export function MatchResults({ matches, userName, onBack }: MatchResultsProps) {
           <ArrowLeft className="mr-2 h-5 w-5" />
           Back to Profile
         </Button>
-        <Button variant="hero" size="lg">
+        <Button variant="professional" size="lg">
           <Sparkles className="mr-2 h-5 w-5" />
           Find More Matches
         </Button>

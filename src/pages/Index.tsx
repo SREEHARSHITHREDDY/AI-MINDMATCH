@@ -1,114 +1,36 @@
 import { useState } from "react";
 import { ProfileForm } from "@/components/ProfileForm";
-import { MatchResults } from "@/components/MatchResults";
+import { Confirmation } from "@/components/Confirmation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Heart, Users, Sparkles, Zap, Target } from "lucide-react";
-import heroImage from "@/assets/hero-matchmaking.jpg";
-
-// Mock AI matching algorithm
-const calculateMatches = (userData: any) => {
-  // Simulate AI processing delay
-  const mockMatches = [
-    {
-      id: "1",
-      name: "Alex Chen",
-      yearOfStudy: "3rd Year",
-      domainKnowledge: "Technology",
-      workingStyle: "Team Player",
-      personalityType: "Ambivert",
-      eventGoal: "Collaboration",
-      techBuzzword: "AI",
-      interests: ["Data Science", "Gaming", "Startups"],
-      matchScore: 92,
-      compatibilityReasons: [
-        "Shared passion for AI and technology",
-        "Both prefer collaborative work environments",
-        "Complementary skills in programming and design",
-        "Similar learning goals for the event"
-      ],
-      complementarySkills: [
-        "Strong in Finance while you excel in Design",
-        "Marketing expertise complements your AI skills",
-        "Leadership qualities balance your creative thinking"
-      ]
-    },
-    {
-      id: "2", 
-      name: "Sarah Kim",
-      yearOfStudy: "Final Year",
-      domainKnowledge: "Business",
-      workingStyle: "Leader",
-      personalityType: "Extrovert", 
-      eventGoal: "Networking",
-      techBuzzword: "Blockchain",
-      interests: ["Startups", "Art", "Music"],
-      matchScore: 78,
-      compatibilityReasons: [
-        "Complementary business and tech backgrounds",
-        "Both interested in startup ecosystem",
-        "Balance between leadership and creativity"
-      ],
-      complementarySkills: [
-        "Business strategy expertise",
-        "Strong networking abilities",
-        "Marketing and communication skills"
-      ]
-    },
-    {
-      id: "3",
-      name: "David Rodriguez", 
-      yearOfStudy: "2nd Year",
-      domainKnowledge: "Analytics",
-      workingStyle: "Creative Thinker",
-      personalityType: "Introvert",
-      eventGoal: "Learning",
-      techBuzzword: "Quantum",
-      interests: ["Data Science", "Reading", "Photography"],
-      matchScore: 65,
-      compatibilityReasons: [
-        "Shared analytical mindset",
-        "Both value learning and growth",
-        "Complementary introvert-extrovert balance"
-      ],
-      complementarySkills: [
-        "Advanced data analysis skills",
-        "Research and documentation abilities", 
-        "Attention to detail and precision"
-      ]
-    }
-  ];
-
-  return mockMatches;
-};
+import { Brain, Heart, Users, Sparkles, Calendar, Target, CheckCircle } from "lucide-react";
+import heroImage from "@/assets/hero-professional.jpg";
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'landing' | 'form' | 'results'>('landing');
-  const [matches, setMatches] = useState<any[]>([]);
+  const [currentView, setCurrentView] = useState<'landing' | 'form' | 'confirmation'>('landing');
   const [userName, setUserName] = useState('');
 
   const handleFormSubmit = (profileData: any) => {
     setUserName(profileData.name);
-    const calculatedMatches = calculateMatches(profileData);
-    setMatches(calculatedMatches);
-    setCurrentView('results');
+    // Here you would typically save to database
+    console.log('Profile submitted:', profileData);
+    setCurrentView('confirmation');
   };
 
-  const handleBackToProfile = () => {
-    setCurrentView('form');
+  const handleBackToLanding = () => {
+    setCurrentView('landing');
   };
 
   if (currentView === 'form') {
     return <ProfileForm onSubmit={handleFormSubmit} />;
   }
 
-  if (currentView === 'results') {
+  if (currentView === 'confirmation') {
     return (
-      <MatchResults 
-        matches={matches} 
+      <Confirmation 
         userName={userName}
-        onBack={handleBackToProfile}
+        onBack={handleBackToLanding}
       />
     );
   }
@@ -117,28 +39,29 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-hero gradient-animate"></div>
+        <div className="absolute inset-0 bg-gradient-hero"></div>
         <div className="relative container mx-auto px-6 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left slide-up">
               <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
                 AI Matchmaking
-                <span className="block text-primary-glow">
-                  Find Your Perfect Match
+                <span className="block text-white/90">
+                  Professional Networking
                 </span>
               </h1>
-              <p className="text-xl text-white/90 mb-8 max-w-2xl">
-                Let artificial intelligence analyze your skills, interests, and personality to connect you with the most compatible participants for collaboration and networking.
+              <p className="text-xl text-white/80 mb-8 max-w-2xl">
+                Submit your profile now and receive your perfectly matched connections after the event. 
+                Our AI analyzes all participants to create the most meaningful professional relationships.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button 
-                  variant="hero" 
+                  variant="glass" 
                   size="lg" 
                   onClick={() => setCurrentView('form')}
-                  className="shadow-glow"
+                  className="bg-white/20 text-white border-white/30 hover:bg-white/30"
                 >
                   <Sparkles className="mr-2 h-5 w-5" />
-                  Start Matching
+                  Register Now
                 </Button>
                 <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10">
                   <Brain className="mr-2 h-5 w-5" />
@@ -146,68 +69,68 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            <div className="relative float-animation">
+            <div className="relative gentle-float">
               <img 
                 src={heroImage} 
-                alt="AI Matchmaking Illustration" 
-                className="w-full max-w-lg mx-auto rounded-2xl shadow-glow"
+                alt="Professional AI Matchmaking" 
+                className="w-full max-w-lg mx-auto rounded-2xl shadow-glass"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-muted/30">
+      {/* Process Flow Section */}
+      <section className="py-20 bg-muted/20">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 slide-up">
             <h2 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
-              How AI Matchmaking Works
+              How Our Process Works
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Our advanced algorithm analyzes multiple factors to create the perfect matches based on compatibility, skills, and shared interests.
+              Register now, get matched later. Our systematic approach ensures the highest quality connections.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center shadow-card hover:shadow-glow transition-all duration-300 hover:scale-105">
+            <Card className="text-center glass-card border-0 hover:shadow-card transition-all duration-300 gentle-float">
               <CardHeader>
                 <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mb-4">
-                  <Brain className="h-8 w-8 text-primary-foreground" />
+                  <Users className="h-8 w-8 text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl">Skill Analysis</CardTitle>
+                <CardTitle className="text-xl">1. Register Your Profile</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  AI evaluates your skills and finds complementary matches to create balanced, high-performing teams.
+                  Complete our comprehensive profile form with your skills, interests, and professional goals.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="text-center shadow-card hover:shadow-glow transition-all duration-300 hover:scale-105">
+            <Card className="text-center glass-card border-0 hover:shadow-card transition-all duration-300 gentle-float">
               <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-gradient-secondary rounded-full flex items-center justify-center mb-4">
-                  <Heart className="h-8 w-8 text-secondary-foreground" />
+                <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mb-4">
+                  <Calendar className="h-8 w-8 text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl">Personality Matching</CardTitle>
+                <CardTitle className="text-xl">2. AI Analysis Period</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Advanced personality analysis ensures compatible communication styles and working preferences.
+                  After registration closes, our AI processes all profiles to identify optimal matches and compatibility.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="text-center shadow-card hover:shadow-glow transition-all duration-300 hover:scale-105">
+            <Card className="text-center glass-card border-0 hover:shadow-card transition-all duration-300 gentle-float">
               <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-gradient-success rounded-full flex items-center justify-center mb-4">
-                  <Target className="h-8 w-8 text-accent-foreground" />
+                <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mb-4">
+                  <CheckCircle className="h-8 w-8 text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl">Goal Alignment</CardTitle>
+                <CardTitle className="text-xl">3. Receive Your Matches</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Matches participants with similar objectives for networking, collaboration, fun, or learning.
+                  Get your personalized compatibility report with detailed match explanations after the event.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -215,90 +138,83 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Match Categories Section */}
+      {/* Benefits Section */}
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Match Quality Levels</h2>
+            <h2 className="text-4xl font-bold mb-4">Why Our AI Matching Works</h2>
             <p className="text-xl text-muted-foreground">
-              Our AI assigns compatibility scores to help you understand your match potential
+              Professional networking powered by advanced compatibility algorithms
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="text-center bg-gradient-to-br from-perfect-match/10 to-perfect-match/5 border-perfect-match/20">
-              <CardHeader>
-                <div className="text-4xl mb-2">🔥</div>
-                <CardTitle className="text-perfect-match">Perfect Match</CardTitle>
-                <CardDescription>80-100% Compatibility</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Exceptional compatibility across all factors
-                </p>
-              </CardContent>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="glass-card border-0 p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Brain className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Skill Complementarity</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Matches based on complementary skills to create well-balanced collaborative opportunities.
+                  </p>
+                </div>
+              </div>
             </Card>
 
-            <Card className="text-center bg-gradient-to-br from-good-match/10 to-good-match/5 border-good-match/20">
-              <CardHeader>
-                <div className="text-4xl mb-2">😊</div>
-                <CardTitle className="text-good-match">Good Match</CardTitle>
-                <CardDescription>60-79% Compatibility</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Strong potential for collaboration
-                </p>
-              </CardContent>
+            <Card className="glass-card border-0 p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Heart className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Interest Similarity</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Connects people with shared passions and professional interests for meaningful conversations.
+                  </p>
+                </div>
+              </div>
             </Card>
 
-            <Card className="text-center bg-gradient-to-br from-moderate-match/10 to-moderate-match/5 border-moderate-match/20">
-              <CardHeader>
-                <div className="text-4xl mb-2">🙂</div>
-                <CardTitle className="text-moderate-match">Moderate Match</CardTitle>
-                <CardDescription>40-59% Compatibility</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Some shared interests and goals
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center bg-gradient-to-br from-unlikely-match/10 to-unlikely-match/5 border-unlikely-match/20">
-              <CardHeader>
-                <div className="text-4xl mb-2">😅</div>
-                <CardTitle className="text-unlikely-match">Unlikely Match</CardTitle>
-                <CardDescription>Below 40% Compatibility</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Different approaches but could be interesting
-                </p>
-              </CardContent>
+            <Card className="glass-card border-0 p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Target className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Goal Alignment</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Ensures matched participants have compatible objectives for the networking experience.
+                  </p>
+                </div>
+              </div>
             </Card>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-hero gradient-animate">
+      <section className="py-20 bg-gradient-hero">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Ready to Find Your Perfect Match?
-          </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join our AI-powered matchmaking experience and discover meaningful connections based on compatibility and shared interests.
-          </p>
-          <Button 
-            variant="hero" 
-            size="lg" 
-            onClick={() => setCurrentView('form')}
-            className="shadow-glow bg-white text-primary hover:bg-white/90"
-          >
-            <Users className="mr-2 h-5 w-5" />
-            Start Your Journey
-          </Button>
+          <div className="glass-card max-w-3xl mx-auto p-12">
+            <h2 className="text-4xl font-bold text-white mb-6">
+              Ready to Join the Network?
+            </h2>
+            <p className="text-xl text-white/90 mb-8">
+              Register your profile today and receive your personalized professional matches after the event. 
+              Don't miss this opportunity to expand your network with AI-powered precision.
+            </p>
+            <Button 
+              variant="glass" 
+              size="lg" 
+              onClick={() => setCurrentView('form')}
+              className="bg-white/20 text-white border-white/30 hover:bg-white/30 shadow-button"
+            >
+              <Users className="mr-2 h-5 w-5" />
+              Register Your Profile
+            </Button>
+          </div>
         </div>
       </section>
     </div>

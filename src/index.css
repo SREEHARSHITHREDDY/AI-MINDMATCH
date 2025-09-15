@@ -6,57 +6,60 @@
 
 @layer base {
   :root {
-    /* Core color palette */
-    --background: 240 10% 98%;
-    --foreground: 245 15% 15%;
+    /* Minimalistic Professional Palette */
+    --background: 0 0% 99%;
+    --foreground: 210 15% 15%;
 
-    /* Card and popover */
+    /* Card and popover with glass effect */
     --card: 0 0% 100%;
-    --card-foreground: 245 15% 15%;
+    --card-foreground: 210 15% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 245 15% 15%;
+    --popover-foreground: 210 15% 15%;
 
-    /* Primary - AI Theme Purple/Pink gradient */
-    --primary: 280 85% 60%;
+    /* Primary - Professional blue */
+    --primary: 210 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 290 95% 70%;
+    --primary-light: 210 100% 95%;
 
-    /* Secondary - Complementary blue */
-    --secondary: 200 85% 65%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary - Neutral gray */
+    --secondary: 210 10% 95%;
+    --secondary-foreground: 210 15% 15%;
 
-    /* Accent - Success green for matches */
-    --accent: 150 85% 55%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Subtle blue */
+    --accent: 210 50% 85%;
+    --accent-foreground: 210 15% 15%;
 
-    /* Muted */
-    --muted: 240 10% 96%;
-    --muted-foreground: 245 15% 55%;
+    /* Muted tones */
+    --muted: 210 10% 96%;
+    --muted-foreground: 210 15% 45%;
+
+    /* Success - Professional green */
+    --success: 150 50% 50%;
+    --success-foreground: 0 0% 100%;
 
     /* Destructive */
-    --destructive: 0 85% 60%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
     /* Borders and inputs */
-    --border: 240 15% 88%;
-    --input: 240 15% 92%;
-    --ring: 280 85% 60%;
+    --border: 210 20% 90%;
+    --input: 210 20% 94%;
+    --ring: 210 100% 50%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(280 85% 60%), hsl(290 95% 70%));
-    --gradient-secondary: linear-gradient(135deg, hsl(200 85% 65%), hsl(210 90% 70%));
-    --gradient-success: linear-gradient(135deg, hsl(150 85% 55%), hsl(160 90% 60%));
-    --gradient-hero: linear-gradient(135deg, hsl(280 85% 60%) 0%, hsl(290 95% 70%) 50%, hsl(200 85% 65%) 100%);
+    /* Glass effect colors */
+    --glass-bg: 255 255 255 / 0.15;
+    --glass-border: 255 255 255 / 0.2;
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 
-    /* Match score colors */
-    --perfect-match: 15 85% 60%;  /* Orange/red for perfect */
-    --good-match: 150 85% 55%;    /* Green for good */
-    --moderate-match: 45 85% 60%; /* Yellow for moderate */
-    --unlikely-match: 240 15% 65%; /* Gray for unlikely */
+    /* Professional gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 50%), hsl(220 90% 60%));
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+    --gradient-hero: linear-gradient(135deg, hsl(210 100% 50%) 0%, hsl(220 90% 60%) 50%, hsl(200 80% 70%) 100%);
 
-    /* Shadows */
-    --shadow-glow: 0 10px 40px -10px hsl(280 85% 60% / 0.3);
-    --shadow-card: 0 4px 20px -2px hsl(245 15% 15% / 0.1);
+    /* Professional shadows */
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --shadow-card: 0 4px 16px -2px rgba(0, 0, 0, 0.08);
+    --shadow-button: 0 2px 8px rgba(0, 0, 0, 0.1);
 
     --radius: 0.75rem;
 
@@ -78,33 +81,40 @@
   }
 
   .dark {
-    --background: 245 25% 8%;
-    --foreground: 240 10% 95%;
+    --background: 210 25% 8%;
+    --foreground: 210 10% 95%;
 
-    --card: 245 25% 10%;
-    --card-foreground: 240 10% 95%;
-    --popover: 245 25% 10%;
-    --popover-foreground: 240 10% 95%;
+    --card: 210 25% 10%;
+    --card-foreground: 210 10% 95%;
+    --popover: 210 25% 10%;
+    --popover-foreground: 210 10% 95%;
 
-    --primary: 285 90% 65%;
-    --primary-foreground: 245 25% 8%;
-    --primary-glow: 295 100% 75%;
+    --primary: 210 100% 55%;
+    --primary-foreground: 210 25% 8%;
+    --primary-light: 210 100% 20%;
 
-    --secondary: 205 90% 70%;
-    --secondary-foreground: 245 25% 8%;
+    --secondary: 210 25% 15%;
+    --secondary-foreground: 210 10% 95%;
 
-    --accent: 155 90% 60%;
-    --accent-foreground: 245 25% 8%;
+    --accent: 210 50% 25%;
+    --accent-foreground: 210 10% 95%;
 
-    --muted: 245 25% 15%;
-    --muted-foreground: 240 10% 65%;
+    --muted: 210 25% 15%;
+    --muted-foreground: 210 10% 65%;
 
-    --destructive: 0 90% 65%;
-    --destructive-foreground: 245 25% 8%;
+    --success: 150 50% 55%;
+    --success-foreground: 210 25% 8%;
 
-    --border: 245 25% 20%;
-    --input: 245 25% 18%;
-    --ring: 285 90% 65%;
+    --destructive: 0 70% 60%;
+    --destructive-foreground: 210 25% 8%;
+
+    --border: 210 25% 20%;
+    --input: 210 25% 18%;
+    --ring: 210 100% 55%;
+
+    --glass-bg: 255 255 255 / 0.05;
+    --glass-border: 255 255 255 / 0.1;
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -126,32 +136,54 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 
+  /* Glass morphism utilities */
+  .glass {
+    background: rgba(var(--glass-bg));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(var(--glass-border));
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  }
+
   /* Custom animations */
-  @keyframes gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  @keyframes float {
+  @keyframes gentle-float {
     0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-5px); }
   }
 
-  @keyframes pulse-glow {
+  @keyframes subtle-pulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    50% { opacity: 0.9; }
   }
 
-  .gradient-animate {
-    background-size: 200% 200%;
-    animation: gradient-shift 6s ease infinite;
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .float-animation {
-    animation: float 3s ease-in-out infinite;
+  .gentle-float {
+    animation: gentle-float 4s ease-in-out infinite;
   }
 
-  .glow-pulse {
-    animation: pulse-glow 2s ease-in-out infinite;
+  .subtle-pulse {
+    animation: subtle-pulse 3s ease-in-out infinite;
+  }
+
+  .slide-up {
+    animation: slide-up 0.6s ease-out;
   }
 }

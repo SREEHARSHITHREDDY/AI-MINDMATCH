@@ -75,10 +75,10 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <Card className="shadow-card border-0 bg-card">
+      <Card className="glass-card border-0 slide-up">
         <CardHeader className="text-center pb-8">
           <div className="flex items-center justify-center mb-4">
-            <div className="p-3 rounded-full bg-gradient-primary">
+            <div className="p-3 rounded-full bg-gradient-primary gentle-float">
               <User className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
@@ -317,9 +317,9 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
             </div>
 
             <div className="flex justify-center pt-6">
-              <Button type="submit" variant="hero" size="lg" className="min-w-48">
+              <Button type="submit" variant="professional" size="lg" className="min-w-48">
                 <Sparkles className="mr-2 h-5 w-5" />
-                Find My Match
+                Submit Profile
               </Button>
             </div>
           </form>
