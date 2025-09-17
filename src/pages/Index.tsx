@@ -7,41 +7,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Brain, Heart, Users, Sparkles, Calendar, Target, CheckCircle } from "lucide-react";
 import heroImage from "@/assets/hero-professional.jpg";
-
 const Index = () => {
   const [currentView, setCurrentView] = useState<'landing' | 'form' | 'confirmation' | 'how-it-works'>('landing');
   const [userName, setUserName] = useState('');
-
   const handleFormSubmit = (profileData: any) => {
     setUserName(profileData.name);
     // Here you would typically save to database
     console.log('Profile submitted:', profileData);
     setCurrentView('confirmation');
   };
-
   const handleBackToLanding = () => {
     setCurrentView('landing');
   };
-
   if (currentView === 'form') {
     return <ProfileForm onSubmit={handleFormSubmit} onBack={handleBackToLanding} />;
   }
-
   if (currentView === 'confirmation') {
-    return (
-      <Confirmation 
-        userName={userName}
-        onBack={handleBackToLanding}
-      />
-    );
+    return <Confirmation userName={userName} onBack={handleBackToLanding} />;
   }
-
   if (currentView === 'how-it-works') {
     return <HowItWorks onBack={handleBackToLanding} />;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero"></div>
@@ -59,32 +46,18 @@ const Index = () => {
                 Our AI analyzes all participants to create the most meaningful professional relationships.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button 
-                  variant="glass" 
-                  size="lg" 
-                  onClick={() => setCurrentView('form')}
-                  className="bg-white/20 text-white border-white/30 hover:bg-white/30"
-                >
+                <Button variant="glass" size="lg" onClick={() => setCurrentView('form')} className="bg-white/20 text-white border-white/30 hover:bg-white/30">
                   <Sparkles className="mr-2 h-5 w-5" />
                   Register Now
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="border-white/30 text-white hover:bg-white/10"
-                  onClick={() => setCurrentView('how-it-works')}
-                >
+                <Button variant="outline" size="lg" onClick={() => setCurrentView('how-it-works')} className="bg-white/20 text-white border-white/30 hover:bg-white/30">
                   <Brain className="mr-2 h-5 w-5" />
                   How It Works
                 </Button>
               </div>
             </div>
             <div className="relative gentle-float">
-              <img 
-                src={heroImage} 
-                alt="Professional AI Matchmaking" 
-                className="w-full max-w-lg mx-auto rounded-2xl shadow-glass"
-              />
+              <img src={heroImage} alt="Professional AI Matchmaking" className="w-full max-w-lg mx-auto rounded-2xl shadow-glass" />
             </div>
           </div>
         </div>
@@ -118,7 +91,9 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="group text-center glass-card border-0 hover:shadow-xl transition-all duration-500 hover:-translate-y-3 bg-card/80 backdrop-blur-sm" style={{ animationDelay: '0.1s' }}>
+            <Card className="group text-center glass-card border-0 hover:shadow-xl transition-all duration-500 hover:-translate-y-3 bg-card/80 backdrop-blur-sm" style={{
+            animationDelay: '0.1s'
+          }}>
               <CardHeader className="pb-6">
                 <div className="mx-auto w-20 h-20 bg-gradient-primary rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
                   <Calendar className="h-10 w-10 text-primary-foreground" />
@@ -133,7 +108,9 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="group text-center glass-card border-0 hover:shadow-xl transition-all duration-500 hover:-translate-y-3 bg-card/80 backdrop-blur-sm" style={{ animationDelay: '0.2s' }}>
+            <Card className="group text-center glass-card border-0 hover:shadow-xl transition-all duration-500 hover:-translate-y-3 bg-card/80 backdrop-blur-sm" style={{
+            animationDelay: '0.2s'
+          }}>
               <CardHeader className="pb-6">
                 <div className="mx-auto w-20 h-20 bg-gradient-primary rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
                   <CheckCircle className="h-10 w-10 text-primary-foreground" />
@@ -218,20 +195,13 @@ const Index = () => {
               Register your profile today and receive your personalized professional matches after the event. 
               Don't miss this opportunity to expand your network with AI-powered precision.
             </p>
-            <Button 
-              variant="glass" 
-              size="lg" 
-              onClick={() => setCurrentView('form')}
-              className="bg-white/20 text-white border-white/30 hover:bg-white/30 shadow-button"
-            >
+            <Button variant="glass" size="lg" onClick={() => setCurrentView('form')} className="bg-white/20 text-white border-white/30 hover:bg-white/30 shadow-button">
               <Users className="mr-2 h-5 w-5" />
               Register Your Profile
             </Button>
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
