@@ -103,43 +103,46 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center glass-card border-0 hover:shadow-card transition-all duration-300 gentle-float">
-              <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mb-4">
-                  <Users className="h-8 w-8 text-primary-foreground" />
+            <Card className="group text-center glass-card border-0 hover:shadow-xl transition-all duration-500 hover:-translate-y-3 bg-card/80 backdrop-blur-sm">
+              <CardHeader className="pb-6">
+                <div className="mx-auto w-20 h-20 bg-gradient-primary rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
+                  <Users className="h-10 w-10 text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl">1. Register Your Profile</CardTitle>
+                <div className="w-12 h-1 bg-gradient-primary rounded-full mx-auto mb-4 group-hover:w-16 transition-all duration-300"></div>
+                <CardTitle className="text-xl text-foreground group-hover:text-primary transition-colors duration-300">1. Register Your Profile</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">
+                <CardDescription className="text-base text-muted-foreground group-hover:text-foreground transition-colors duration-300">
                   Complete our comprehensive profile form with your skills, interests, and professional goals.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="text-center glass-card border-0 hover:shadow-card transition-all duration-300 gentle-float">
-              <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mb-4">
-                  <Calendar className="h-8 w-8 text-primary-foreground" />
+            <Card className="group text-center glass-card border-0 hover:shadow-xl transition-all duration-500 hover:-translate-y-3 bg-card/80 backdrop-blur-sm" style={{ animationDelay: '0.1s' }}>
+              <CardHeader className="pb-6">
+                <div className="mx-auto w-20 h-20 bg-gradient-primary rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
+                  <Calendar className="h-10 w-10 text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl">2. AI Analysis Period</CardTitle>
+                <div className="w-12 h-1 bg-gradient-primary rounded-full mx-auto mb-4 group-hover:w-16 transition-all duration-300"></div>
+                <CardTitle className="text-xl text-foreground group-hover:text-primary transition-colors duration-300">2. AI Analysis Period</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">
+                <CardDescription className="text-base text-muted-foreground group-hover:text-foreground transition-colors duration-300">
                   After registration closes, our AI processes all profiles to identify optimal matches and compatibility.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="text-center glass-card border-0 hover:shadow-card transition-all duration-300 gentle-float">
-              <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle className="h-8 w-8 text-primary-foreground" />
+            <Card className="group text-center glass-card border-0 hover:shadow-xl transition-all duration-500 hover:-translate-y-3 bg-card/80 backdrop-blur-sm" style={{ animationDelay: '0.2s' }}>
+              <CardHeader className="pb-6">
+                <div className="mx-auto w-20 h-20 bg-gradient-primary rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
+                  <CheckCircle className="h-10 w-10 text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl">3. Receive Your Matches</CardTitle>
+                <div className="w-12 h-1 bg-gradient-primary rounded-full mx-auto mb-4 group-hover:w-16 transition-all duration-300"></div>
+                <CardTitle className="text-xl text-foreground group-hover:text-primary transition-colors duration-300">3. Receive Your Matches</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">
+                <CardDescription className="text-base text-muted-foreground group-hover:text-foreground transition-colors duration-300">
                   Get your personalized compatibility report with detailed match explanations after the event.
                 </CardDescription>
               </CardContent>
@@ -159,42 +162,42 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="glass-card border-0 p-6">
+            <Card className="group glass-card border-0 p-6 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 bg-card/80 backdrop-blur-sm">
               <div className="flex items-start gap-4">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Brain className="h-6 w-6 text-primary" />
+                <div className="p-3 rounded-2xl bg-gradient-primary group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                  <Brain className="h-6 w-6 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Skill Complementarity</h3>
-                  <p className="text-muted-foreground text-sm">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-3 text-foreground group-hover:text-primary transition-colors duration-300">Skill Complementarity</h3>
+                  <p className="text-muted-foreground text-sm group-hover:text-foreground transition-colors duration-300">
                     Matches based on complementary skills to create well-balanced collaborative opportunities.
                   </p>
                 </div>
               </div>
             </Card>
 
-            <Card className="glass-card border-0 p-6">
+            <Card className="group glass-card border-0 p-6 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 bg-card/80 backdrop-blur-sm">
               <div className="flex items-start gap-4">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Heart className="h-6 w-6 text-primary" />
+                <div className="p-3 rounded-2xl bg-gradient-primary group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                  <Heart className="h-6 w-6 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Interest Similarity</h3>
-                  <p className="text-muted-foreground text-sm">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-3 text-foreground group-hover:text-primary transition-colors duration-300">Interest Similarity</h3>
+                  <p className="text-muted-foreground text-sm group-hover:text-foreground transition-colors duration-300">
                     Connects people with shared passions and professional interests for meaningful conversations.
                   </p>
                 </div>
               </div>
             </Card>
 
-            <Card className="glass-card border-0 p-6">
+            <Card className="group glass-card border-0 p-6 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 bg-card/80 backdrop-blur-sm md:col-span-2 lg:col-span-1">
               <div className="flex items-start gap-4">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Target className="h-6 w-6 text-primary" />
+                <div className="p-3 rounded-2xl bg-gradient-primary group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                  <Target className="h-6 w-6 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Goal Alignment</h3>
-                  <p className="text-muted-foreground text-sm">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-3 text-foreground group-hover:text-primary transition-colors duration-300">Goal Alignment</h3>
+                  <p className="text-muted-foreground text-sm group-hover:text-foreground transition-colors duration-300">
                     Ensures matched participants have compatible objectives for the networking experience.
                   </p>
                 </div>
