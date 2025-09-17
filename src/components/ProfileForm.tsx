@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
-import { User, Brain, Target, Heart, Sparkles } from "lucide-react";
+import { User, Brain, Target, Heart, Sparkles, ArrowLeft } from "lucide-react";
 
 interface ProfileData {
   name: string;
@@ -33,9 +33,10 @@ interface ProfileData {
 
 interface ProfileFormProps {
   onSubmit: (data: ProfileData) => void;
+  onBack: () => void;
 }
 
-export function ProfileForm({ onSubmit }: ProfileFormProps) {
+export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
   const [formData, setFormData] = useState<ProfileData>({
     name: "",
     yearOfStudy: "",
@@ -74,8 +75,30 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <Card className="glass-card border-0 slide-up">
+    <div className="min-h-screen bg-background">
+      <div className="bg-gradient-hero">
+        <div className="container mx-auto px-6 py-8">
+          <Button 
+            variant="glass" 
+            onClick={onBack}
+            className="mb-6 bg-white/20 text-white border-white/30 hover:bg-white/30"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Button>
+          <div className="text-center">
+            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+              Professional Profile Registration
+            </h1>
+            <p className="text-xl text-white/90 max-w-2xl mx-auto">
+              Help us understand your professional background to create meaningful connections
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="max-w-4xl mx-auto p-6 -mt-8 relative z-10">
+        <Card className="glass-card border-0 slide-up bg-card/95 backdrop-blur-sm">
         <CardHeader className="text-center pb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="p-3 rounded-full bg-gradient-primary gentle-float">
@@ -325,6 +348,7 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ProfileForm } from "@/components/ProfileForm";
 import { Confirmation } from "@/components/Confirmation";
+import { HowItWorks } from "@/components/HowItWorks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +9,7 @@ import { Brain, Heart, Users, Sparkles, Calendar, Target, CheckCircle } from "lu
 import heroImage from "@/assets/hero-professional.jpg";
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'landing' | 'form' | 'confirmation'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'form' | 'confirmation' | 'how-it-works'>('landing');
   const [userName, setUserName] = useState('');
 
   const handleFormSubmit = (profileData: any) => {
@@ -23,7 +24,7 @@ const Index = () => {
   };
 
   if (currentView === 'form') {
-    return <ProfileForm onSubmit={handleFormSubmit} />;
+    return <ProfileForm onSubmit={handleFormSubmit} onBack={handleBackToLanding} />;
   }
 
   if (currentView === 'confirmation') {
@@ -33,6 +34,10 @@ const Index = () => {
         onBack={handleBackToLanding}
       />
     );
+  }
+
+  if (currentView === 'how-it-works') {
+    return <HowItWorks onBack={handleBackToLanding} />;
   }
 
   return (
@@ -63,7 +68,12 @@ const Index = () => {
                   <Sparkles className="mr-2 h-5 w-5" />
                   Register Now
                 </Button>
-                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="border-white/30 text-white hover:bg-white/10"
+                  onClick={() => setCurrentView('how-it-works')}
+                >
                   <Brain className="mr-2 h-5 w-5" />
                   How It Works
                 </Button>
