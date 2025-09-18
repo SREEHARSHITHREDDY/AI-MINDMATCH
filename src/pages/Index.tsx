@@ -1,18 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProfileForm } from "@/components/ProfileForm";
 import { Confirmation } from "@/components/Confirmation";
 import { HowItWorks } from "@/components/HowItWorks";
+import { AuthForm } from "@/components/AuthForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Heart, Users, Sparkles, Calendar, Target, CheckCircle } from "lucide-react";
+import { Brain, Heart, Users, Sparkles, Calendar, Target, CheckCircle, LogOut } from "lucide-react";
 import { saveProfile } from "@/lib/profileService";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-professional.jpg";
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'landing' | 'form' | 'confirmation' | 'how-it-works'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'form' | 'confirmation' | 'how-it-works' | 'auth'>('landing');
   const [userName, setUserName] = useState('');
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Check current auth status
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleFormSubmit = async (profileData: any) => {
     try {
@@ -35,6 +54,40 @@ const Index = () => {
   const handleBackToLanding = () => {
     setCurrentView('landing');
   };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Signed out",
+      description: "You have been successfully signed out.",
+    });
+  };
+
+  const handleRegisterClick = () => {
+    if (user) {
+      setCurrentView('form');
+    } else {
+      setCurrentView('auth');
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    setCurrentView('form');
+  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentView === 'auth') {
+    return <AuthForm onSuccess={handleAuthSuccess} onBack={handleBackToLanding} />;
+  }
   if (currentView === 'form') {
     return <ProfileForm onSubmit={handleFormSubmit} onBack={handleBackToLanding} />;
   }
@@ -49,6 +102,18 @@ const Index = () => {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero"></div>
         <div className="relative container mx-auto px-6 py-20">
+          {user && (
+            <div className="flex justify-end mb-4">
+              <Button 
+                variant="outline" 
+                onClick={handleSignOut}
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </Button>
+            </div>
+          )}
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left slide-up">
               <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
@@ -62,9 +127,9 @@ const Index = () => {
                 Our AI analyzes all participants to create the most meaningful professional relationships.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button variant="glass" size="lg" onClick={() => setCurrentView('form')} className="bg-white/20 text-white border-white/30 hover:bg-white/30">
+                <Button variant="glass" size="lg" onClick={handleRegisterClick} className="bg-white/20 text-white border-white/30 hover:bg-white/30">
                   <Sparkles className="mr-2 h-5 w-5" />
-                  Register Now
+                  {user ? 'Register Now' : 'Sign In to Register'}
                 </Button>
                 <Button variant="outline" size="lg" onClick={() => setCurrentView('how-it-works')} className="bg-white/20 text-white border-white/30 hover:bg-white/30">
                   <Brain className="mr-2 h-5 w-5" />
@@ -211,9 +276,9 @@ const Index = () => {
               Register your profile today and receive your personalized professional matches after the event. 
               Don't miss this opportunity to expand your network with AI-powered precision.
             </p>
-            <Button variant="glass" size="lg" onClick={() => setCurrentView('form')} className="bg-white/20 text-white border-white/30 hover:bg-white/30 shadow-button">
+            <Button variant="glass" size="lg" onClick={handleRegisterClick} className="bg-white/20 text-white border-white/30 hover:bg-white/30 shadow-button">
               <Users className="mr-2 h-5 w-5" />
-              Register Your Profile
+              {user ? 'Register Your Profile' : 'Sign In to Register'}
             </Button>
           </div>
         </div>
