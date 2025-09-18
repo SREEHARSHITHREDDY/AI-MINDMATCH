@@ -14,7 +14,165 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      event_registrations: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          profile_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          profile_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          profile_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          matching_completed: boolean
+          name: string
+          registration_deadline: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          matching_completed?: boolean
+          name: string
+          registration_deadline: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          matching_completed?: boolean
+          name?: string
+          registration_deadline?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      matches: {
+        Row: {
+          compatibility_reasons: string[]
+          complementary_skills: string[]
+          created_at: string
+          id: string
+          match_score: number
+          matched_user_id: string
+          user_id: string
+        }
+        Insert: {
+          compatibility_reasons?: string[]
+          complementary_skills?: string[]
+          created_at?: string
+          id?: string
+          match_score: number
+          matched_user_id: string
+          user_id: string
+        }
+        Update: {
+          compatibility_reasons?: string[]
+          complementary_skills?: string[]
+          created_at?: string
+          id?: string
+          match_score?: number
+          matched_user_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          additional_info: string | null
+          communication_style: string
+          created_at: string
+          decision_making: string
+          domain_knowledge: string
+          event_goal: string
+          hobbies: string | null
+          id: string
+          interests: string
+          name: string
+          personality_type: string
+          skills: Json
+          tech_buzzword: string
+          updated_at: string
+          user_id: string
+          working_style: string
+          year_of_study: string
+        }
+        Insert: {
+          additional_info?: string | null
+          communication_style: string
+          created_at?: string
+          decision_making: string
+          domain_knowledge: string
+          event_goal: string
+          hobbies?: string | null
+          id?: string
+          interests: string
+          name: string
+          personality_type: string
+          skills?: Json
+          tech_buzzword: string
+          updated_at?: string
+          user_id: string
+          working_style: string
+          year_of_study: string
+        }
+        Update: {
+          additional_info?: string | null
+          communication_style?: string
+          created_at?: string
+          decision_making?: string
+          domain_knowledge?: string
+          event_goal?: string
+          hobbies?: string | null
+          id?: string
+          interests?: string
+          name?: string
+          personality_type?: string
+          skills?: Json
+          tech_buzzword?: string
+          updated_at?: string
+          user_id?: string
+          working_style?: string
+          year_of_study?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -6,15 +6,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, Heart, Users, Sparkles, Calendar, Target, CheckCircle } from "lucide-react";
+import { saveProfile } from "@/lib/profileService";
+import { useToast } from "@/hooks/use-toast";
 import heroImage from "@/assets/hero-professional.jpg";
 const Index = () => {
   const [currentView, setCurrentView] = useState<'landing' | 'form' | 'confirmation' | 'how-it-works'>('landing');
   const [userName, setUserName] = useState('');
-  const handleFormSubmit = (profileData: any) => {
-    setUserName(profileData.name);
-    // Here you would typically save to database
-    console.log('Profile submitted:', profileData);
-    setCurrentView('confirmation');
+  const { toast } = useToast();
+
+  const handleFormSubmit = async (profileData: any) => {
+    try {
+      await saveProfile(profileData);
+      setUserName(profileData.name);
+      setCurrentView('confirmation');
+      toast({
+        title: "Profile Saved Successfully!",
+        description: "You're now registered for AI matching. We'll contact you after the event with your matches.",
+      });
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast({
+        title: "Error Saving Profile",
+        description: "Please try again. If the problem persists, please contact support.",
+        variant: "destructive",
+      });
+    }
   };
   const handleBackToLanding = () => {
     setCurrentView('landing');

@@ -32,7 +32,7 @@ interface ProfileData {
 }
 
 interface ProfileFormProps {
-  onSubmit: (data: ProfileData) => void;
+  onSubmit: (data: ProfileData) => Promise<void>;
   onBack: () => void;
 }
 
@@ -69,9 +69,13 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      await onSubmit(formData);
+    } catch (error) {
+      console.error('Error submitting profile:', error);
+    }
   };
 
   return (
