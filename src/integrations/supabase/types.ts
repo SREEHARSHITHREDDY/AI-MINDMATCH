@@ -116,15 +116,21 @@ export type Database = {
       profiles: {
         Row: {
           additional_info: string | null
+          bio: string | null
           communication_style: string
           created_at: string
+          date_of_birth: string | null
           decision_making: string
           domain_knowledge: string
           event_goal: string
+          gender: string | null
           hobbies: string | null
           id: string
           interests: string
+          location: string | null
+          match_preferences: Json | null
           name: string
+          occupation: string | null
           personality_type: string
           skills: Json
           tech_buzzword: string
@@ -135,15 +141,21 @@ export type Database = {
         }
         Insert: {
           additional_info?: string | null
+          bio?: string | null
           communication_style: string
           created_at?: string
+          date_of_birth?: string | null
           decision_making: string
           domain_knowledge: string
           event_goal: string
+          gender?: string | null
           hobbies?: string | null
           id?: string
           interests: string
+          location?: string | null
+          match_preferences?: Json | null
           name: string
+          occupation?: string | null
           personality_type: string
           skills?: Json
           tech_buzzword: string
@@ -154,15 +166,21 @@ export type Database = {
         }
         Update: {
           additional_info?: string | null
+          bio?: string | null
           communication_style?: string
           created_at?: string
+          date_of_birth?: string | null
           decision_making?: string
           domain_knowledge?: string
           event_goal?: string
+          gender?: string | null
           hobbies?: string | null
           id?: string
           interests?: string
+          location?: string | null
+          match_preferences?: Json | null
           name?: string
+          occupation?: string | null
           personality_type?: string
           skills?: Json
           tech_buzzword?: string

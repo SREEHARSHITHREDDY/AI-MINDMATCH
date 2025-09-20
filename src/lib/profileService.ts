@@ -20,6 +20,18 @@ export interface ProfileData {
   interests: string;
   eventGoal: string;
   additionalInfo: string;
+  // New essential fields
+  gender: string;
+  dateOfBirth: string;
+  location: string;
+  occupation: string;
+  bio: string;
+  matchPreferences: {
+    genderPreference: string;
+    ageRangeMin: number;
+    ageRangeMax: number;
+    locationRange: string;
+  };
 }
 
 export const saveProfile = async (profileData: ProfileData) => {
@@ -45,6 +57,13 @@ export const saveProfile = async (profileData: ProfileData) => {
       event_goal: profileData.eventGoal,
       additional_info: profileData.additionalInfo,
       skills: profileData.skills,
+      // New essential fields
+      gender: profileData.gender,
+      date_of_birth: profileData.dateOfBirth,
+      location: profileData.location,
+      occupation: profileData.occupation,
+      bio: profileData.bio,
+      match_preferences: profileData.matchPreferences,
     })
     .eq('user_id', user.id)
     .select()
