@@ -113,25 +113,62 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          read: boolean | null
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          read?: boolean | null
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          read?: boolean | null
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           additional_info: string | null
+          age_range_max: number | null
+          age_range_min: number | null
+          ai_compatibility_score: number | null
           bio: string | null
           communication_style: string
+          completed_steps: Json | null
           created_at: string
           date_of_birth: string | null
+          dealbreakers: Json | null
           decision_making: string
           domain_knowledge: string
           event_goal: string
           gender: string | null
+          hangout_activities: string | null
           hobbies: string | null
           id: string
+          important_values: Json | null
+          industry_field: string | null
           interests: string
-          location: string | null
-          match_preferences: Json | null
+          lifestyle_interests: Json | null
           name: string
-          occupation: string | null
+          personality_traits: Json | null
           personality_type: string
+          profile_picture_url: string | null
+          purpose: string | null
+          relationship_goals: string | null
           skills: Json
           tech_buzzword: string
           updated_at: string
@@ -141,22 +178,32 @@ export type Database = {
         }
         Insert: {
           additional_info?: string | null
+          age_range_max?: number | null
+          age_range_min?: number | null
+          ai_compatibility_score?: number | null
           bio?: string | null
           communication_style: string
+          completed_steps?: Json | null
           created_at?: string
           date_of_birth?: string | null
+          dealbreakers?: Json | null
           decision_making: string
           domain_knowledge: string
           event_goal: string
           gender?: string | null
+          hangout_activities?: string | null
           hobbies?: string | null
           id?: string
+          important_values?: Json | null
+          industry_field?: string | null
           interests: string
-          location?: string | null
-          match_preferences?: Json | null
+          lifestyle_interests?: Json | null
           name: string
-          occupation?: string | null
+          personality_traits?: Json | null
           personality_type: string
+          profile_picture_url?: string | null
+          purpose?: string | null
+          relationship_goals?: string | null
           skills?: Json
           tech_buzzword: string
           updated_at?: string
@@ -166,28 +213,65 @@ export type Database = {
         }
         Update: {
           additional_info?: string | null
+          age_range_max?: number | null
+          age_range_min?: number | null
+          ai_compatibility_score?: number | null
           bio?: string | null
           communication_style?: string
+          completed_steps?: Json | null
           created_at?: string
           date_of_birth?: string | null
+          dealbreakers?: Json | null
           decision_making?: string
           domain_knowledge?: string
           event_goal?: string
           gender?: string | null
+          hangout_activities?: string | null
           hobbies?: string | null
           id?: string
+          important_values?: Json | null
+          industry_field?: string | null
           interests?: string
-          location?: string | null
-          match_preferences?: Json | null
+          lifestyle_interests?: Json | null
           name?: string
-          occupation?: string | null
+          personality_traits?: Json | null
           personality_type?: string
+          profile_picture_url?: string | null
+          purpose?: string | null
+          relationship_goals?: string | null
           skills?: Json
           tech_buzzword?: string
           updated_at?: string
           user_id?: string
           working_style?: string
           year_of_study?: string
+        }
+        Relationships: []
+      }
+      user_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          message_content: string | null
+          target_user_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          message_content?: string | null
+          target_user_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          message_content?: string | null
+          target_user_id?: string
+          user_id?: string
         }
         Relationships: []
       }
