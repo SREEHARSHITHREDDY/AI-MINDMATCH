@@ -6,6 +6,7 @@ import { PersonalDetailsStep } from "./PersonalDetailsStep";
 import { LifestyleStep } from "./LifestyleStep";
 import { ValuesStep } from "./ValuesStep";
 import { AIMatchingStep } from "./AIMatchingStep";
+import { ConfirmationPage } from "./ConfirmationPage";
 import { OnboardingData } from "@/lib/types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -14,7 +15,7 @@ interface OnboardingFlowProps {
   onComplete: () => void;
 }
 
-type OnboardingStep = 'welcome' | 'auth' | 'purpose' | 'personal-details' | 'lifestyle' | 'values' | 'ai-matching';
+type OnboardingStep = 'welcome' | 'auth' | 'purpose' | 'personal-details' | 'lifestyle' | 'values' | 'ai-matching' | 'confirmation';
 
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome');
@@ -79,7 +80,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         description: "Welcome to AI Matchmaking. Let's find your perfect matches!",
       });
 
-      onComplete();
+      setCurrentStep('confirmation');
     } catch (error: any) {
       toast({
         title: "Error saving profile",
@@ -105,6 +106,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         break;
       case 'ai-matching':
         setCurrentStep('values');
+        break;
+      case 'confirmation':
+        setCurrentStep('auth');
         break;
       default:
         setCurrentStep('welcome');
@@ -178,6 +182,13 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           onNext={handleComplete}
           onBack={goBack}
           initialData={onboardingData}
+        />
+      );
+    
+    case 'confirmation':
+      return (
+        <ConfirmationPage 
+          onComplete={onComplete}
         />
       );
     
