@@ -1,14 +1,28 @@
 // src/components/ProfileForm.tsx
 import { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient"; 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Sparkles } from "lucide-react";
+
+interface Skills {
+  AI: number;
+  Finance: number;
+  Design: number;
+  Marketing: number;
+  Programming: number;
+}
+
+interface MatchPreferences {
+  genderPreference: string;
+  ageRangeMin: number;
+  ageRangeMax: number;
+  locationRange: string;
+}
 
 interface ProfileData {
   name: string;
@@ -20,13 +34,7 @@ interface ProfileData {
   decisionMaking: string;
   techBuzzword: string;
   hobbies: string;
-  skills: {
-    AI: number;
-    Finance: number;
-    Design: number;
-    Marketing: number;
-    Programming: number;
-  };
+  skills: Skills;
   interests: string;
   eventGoal: string;
   additionalInfo: string;
@@ -35,12 +43,7 @@ interface ProfileData {
   location: string;
   occupation: string;
   bio: string;
-  matchPreferences: {
-    genderPreference: string;
-    ageRangeMin: number;
-    ageRangeMax: number;
-    locationRange: string;
-  };
+  matchPreferences: MatchPreferences;
 }
 
 interface ProfileFormProps {
@@ -70,7 +73,7 @@ export function ProfileForm({ onBack }: ProfileFormProps) {
     matchPreferences: { genderPreference: "", ageRangeMin: 18, ageRangeMax: 65, locationRange: "" },
   });
 
-  const handleSkillChange = (skill: keyof typeof formData.skills, value: number[]) => {
+  const handleSkillChange = (skill: keyof Skills, value: number[]) => {
     setFormData(prev => ({
       ...prev,
       skills: { ...prev.skills, [skill]: value[0] },
@@ -80,20 +83,9 @@ export function ProfileForm({ onBack }: ProfileFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Get current logged-in user
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-    const userId = userData?.user?.id;
-
-    if (!userId) {
-      alert("User not logged in.");
-      return;
-    }
-
-    // Save data to Supabase
     const { data, error } = await supabase
       .from("profiles")
       .upsert({
-        user_id: userId, // important for unique constraint
         name: formData.name,
         year_of_study: formData.yearOfStudy,
         domain_knowledge: formData.domainKnowledge,
@@ -112,7 +104,7 @@ export function ProfileForm({ onBack }: ProfileFormProps) {
         event_goal: formData.eventGoal,
         additional_info: formData.additionalInfo,
         gender: formData.gender,
-        date_of_birth: formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString() : null,
+        date_of_birth: formData.dateOfBirth,
         location: formData.location,
         occupation: formData.occupation,
         bio: formData.bio,
@@ -165,10 +157,17 @@ export function ProfileForm({ onBack }: ProfileFormProps) {
                 />
               </div>
 
+              {/* Skills sliders */}
               {Object.entries(formData.skills).map(([skill, value]) => (
                 <div key={skill} className="space-y-1">
                   <Label>{skill}</Label>
-                  <Slider value={[value]} onValueChange={(val) => handleSkillChange(skill as keyof typeof formData.skills, val)} min={1} max={5} step={1} />
+                  <Slider
+                    value={[value]}
+                    onValueChange={(val) => handleSkillChange(skill as keyof Skills, val)}
+                    min={1}
+                    max={5}
+                    step={1}
+                  />
                 </div>
               ))}
 
