@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface ProfileData {
   name: string;
+  gender: string;
   yearOfStudy: string;
   domainKnowledge: string;
   workingStyle: string;
@@ -34,6 +35,7 @@ export const saveProfile = async (profileData: ProfileData) => {
     id: user.id, // Use user.id as the primary key
     user_id: user.id, // Also set user_id for compatibility
     name: profileData.name,
+    gender: profileData.gender,
     year_of_study: profileData.yearOfStudy,
     domain_knowledge: profileData.domainKnowledge,
     working_style: profileData.workingStyle,

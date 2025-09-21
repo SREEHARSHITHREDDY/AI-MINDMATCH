@@ -11,6 +11,7 @@ import { User, Brain, Target, Heart, Sparkles, ArrowLeft } from "lucide-react";
 
 interface ProfileData {
   name: string;
+  gender: string;
   yearOfStudy: string;
   domainKnowledge: string;
   workingStyle: string;
@@ -39,6 +40,7 @@ interface ProfileFormProps {
 export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
   const [formData, setFormData] = useState<ProfileData>({
     name: "",
+    gender: "",
     yearOfStudy: "",
     domainKnowledge: "",
     workingStyle: "",
@@ -138,6 +140,23 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
                   />
                 </div>
                 
+                <div className="space-y-2">
+                  <Label htmlFor="gender">Gender</Label>
+                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="non-binary">Non-binary</SelectItem>
+                      <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="yearOfStudy">Year of Study / Experience</Label>
                   <Select onValueChange={(value) => setFormData(prev => ({ ...prev, yearOfStudy: value }))}>
