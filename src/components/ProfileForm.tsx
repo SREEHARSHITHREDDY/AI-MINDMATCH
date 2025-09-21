@@ -1,6 +1,6 @@
 // src/components/ProfileForm.tsx
 import { useState } from "react";
-import { supabase } from "../lib/supabaseClient"; 
+import { supabase } from "../lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -157,17 +157,10 @@ export function ProfileForm({ onBack }: ProfileFormProps) {
                 />
               </div>
 
-              {/* Skills sliders */}
               {Object.entries(formData.skills).map(([skill, value]) => (
                 <div key={skill} className="space-y-1">
                   <Label>{skill}</Label>
-                  <Slider
-                    value={[value]}
-                    onValueChange={(val) => handleSkillChange(skill as keyof Skills, val)}
-                    min={1}
-                    max={5}
-                    step={1}
-                  />
+                  <Slider value={[value]} onValueChange={(val) => handleSkillChange(skill as keyof Skills, val)} min={1} max={5} step={1} />
                 </div>
               ))}
 
