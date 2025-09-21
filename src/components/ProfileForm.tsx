@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient"; // Ensure you have this configured
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { User, Brain, Target, Heart, Sparkles, ArrowLeft } from "lucide-react";
+import { User, Brain, Heart, Target, Sparkles, ArrowLeft } from "lucide-react";
 
 interface ProfileData {
   name: string;
@@ -28,7 +29,6 @@ interface ProfileData {
   interests: string;
   eventGoal: string;
   additionalInfo: string;
-  // New essential fields
   gender: string;
   dateOfBirth: string;
   location: string;
@@ -42,23 +42,11 @@ interface ProfileData {
   };
 }
 
-interface SubmitPayload {
-  full_name?: string | null;
-  bio?: string | null;
-  // arrays must be text[] on DB side
-  lifestyle_interests?: string[];        // e.g. ["Music","Travel"]
-  relationship_preferences?: string[];   // e.g. ["Any","Female"]
-  profile_picture_url?: string | null;
-  // optional: include a metadata JSON if you want to keep the rest of the form
-  meta?: Record<string, any>;
-}
-
 interface ProfileFormProps {
-  onSubmit: (data: SubmitPayload) => Promise<void>;
   onBack: () => void;
 }
 
-export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
+export default function ProfileForm({ onBack }: ProfileFormProps) {
   const [formData, setFormData] = useState<ProfileData>({
     name: "",
     yearOfStudy: "",
@@ -69,225 +57,118 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
     decisionMaking: "",
     techBuzzword: "",
     hobbies: "",
-    skills: {
-      AI: 3,
-      Finance: 3,
-      Design: 3,
-      Marketing: 3,
-      Programming: 3,
-    },
+    skills: { AI: 3, Finance: 3, Design: 3, Marketing: 3, Programming: 3 },
     interests: "",
     eventGoal: "",
     additionalInfo: "",
-    // New essential fields
     gender: "",
     dateOfBirth: "",
     location: "",
     occupation: "",
     bio: "",
-    matchPreferences: {
-      genderPreference: "",
-      ageRangeMin: 18,
-      ageRangeMax: 65,
-      locationRange: "",
-    },
+    matchPreferences: { genderPreference: "", ageRangeMin: 18, ageRangeMax: 65, locationRange: "" },
   });
 
   const handleSkillChange = (skill: keyof typeof formData.skills, value: number[]) => {
-    setFormData(prev => ({
-      ...prev,
-      skills: {
-        ...prev.skills,
-        [skill]: value[0]
-      }
-    }));
-  };
-
-  // Utility: split a comma/line separated string into trimmed array, removing empties
-  const normalizeToArray = (input?: string) => {
-    if (!input) return [];
-    // split by comma or newline
-    return input
-      .split(/[\n,]+/)
-      .map(s => s.trim())
-      .filter(Boolean);
+    setFormData(prev => ({ ...prev, skills: { ...prev.skills, [skill]: value[0] } }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Build a safe payload that matches typical `profiles` table columns
-    const payload: SubmitPayload = {
-      full_name: formData.name || null,
-      bio: formData.bio || null,
-      // Map interests/hobbies -> lifestyle_interests (DB expects text[])
-      lifestyle_interests: [
-        ...normalizeToArray(formData.interests),
-        ...normalizeToArray(formData.hobbies)
-      ].filter(Boolean),
-      // Map gender preference into relationship_preferences (as an example)
-      relationship_preferences: formData.matchPreferences.genderPreference
-        ? [formData.matchPreferences.genderPreference]
-        : [],
-      profile_picture_url: null, // no upload in this form
-      // Put the rest of the complex fields into meta for future use (jsonb column if you have one)
-      meta: {
-        yearOfStudy: formData.yearOfStudy || null,
-        domainKnowledge: formData.domainKnowledge || null,
-        workingStyle: formData.workingStyle || null,
-        personalityType: formData.personalityType || null,
-        communicationStyle: formData.communicationStyle || null,
-        decisionMaking: formData.decisionMaking || null,
-        techBuzzword: formData.techBuzzword || null,
-        skills: formData.skills,
-        eventGoal: formData.eventGoal || null,
-        additionalInfo: formData.additionalInfo || null,
-        gender: formData.gender || null,
-        dateOfBirth: formData.dateOfBirth || null,
-        location: formData.location || null,
-        occupation: formData.occupation || null,
-        matchPreferences: {
-          ageRangeMin: Number(formData.matchPreferences.ageRangeMin) || 18,
-          ageRangeMax: Number(formData.matchPreferences.ageRangeMax) || 65,
-          locationRange: formData.matchPreferences.locationRange || null
-        }
-      }
-    };
-
-    // Ensure arrays are real arrays (not empty-string)
-    if (!payload.lifestyle_interests) payload.lifestyle_interests = [];
-    if (!payload.relationship_preferences) payload.relationship_preferences = [];
-
     try {
-      // Call the provided onSubmit with sanitized payload
-      await onSubmit(payload);
-    } catch (error: any) {
-      // Log full error to console — helpful for debugging server response
-      console.error('Error submitting profile:', error);
-      // Re-throw or handle UI toast here as needed
-      throw error;
+      const user = supabase.auth.user();
+      if (!user) throw new Error("User not authenticated");
+
+      const payload = {
+        user_id: user.id,
+        name: formData.name,
+        year_of_study: formData.yearOfStudy,
+        domain_knowledge: formData.domainKnowledge,
+        working_style: formData.workingStyle,
+        personality_type: formData.personalityType,
+        communication_style: formData.communicationStyle,
+        decision_making: formData.decisionMaking,
+        tech_buzzword: formData.techBuzzword,
+        hobbies: formData.hobbies,
+        skills_ai: formData.skills.AI,
+        skills_finance: formData.skills.Finance,
+        skills_design: formData.skills.Design,
+        skills_marketing: formData.skills.Marketing,
+        skills_programming: formData.skills.Programming,
+        interests: formData.interests,
+        event_goal: formData.eventGoal,
+        additional_info: formData.additionalInfo,
+        gender: formData.gender,
+        date_of_birth: formData.dateOfBirth,
+        location: formData.location,
+        occupation: formData.occupation,
+        bio: formData.bio,
+        match_preferences_gender: formData.matchPreferences.genderPreference,
+        match_preferences_age_min: formData.matchPreferences.ageRangeMin,
+        match_preferences_age_max: formData.matchPreferences.ageRangeMax,
+        match_preferences_location: formData.matchPreferences.locationRange,
+      };
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .upsert(payload, { onConflict: ["user_id"] });
+
+      if (error) throw error;
+
+      alert("Profile saved successfully!");
+    } catch (err: any) {
+      console.error("Error saving profile:", err.message);
+      alert("Error saving profile. Please try again.");
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-gradient-hero">
-        <div className="container mx-auto px-6 py-8">
-          <Button 
-            variant="glass" 
-            onClick={onBack}
-            className="mb-6 bg-white/20 text-white border-white/30 hover:bg-white/30"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </Button>
-          <div className="text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-              Professional Profile Registration
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Help us understand your professional background to create meaningful connections
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <div className="max-w-4xl mx-auto p-6 -mt-8 relative z-10">
-        <Card className="glass-card border-0 slide-up bg-card/95 backdrop-blur-sm">
-        <CardHeader className="text-center pb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className="p-3 rounded-full bg-gradient-primary gentle-float">
-              <User className="h-8 w-8 text-primary-foreground" />
-            </div>
-          </div>
-          <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Create Your Profile
-          </CardTitle>
-          <CardDescription className="text-lg text-muted-foreground">
-            Tell us about yourself to find your perfect match!
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Basic Information */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 mb-4">
-                <User className="h-5 w-5 text-primary" />
-                <h3 className="text-xl font-semibold">Basic Information</h3>
-              </div>
+      <div className="container mx-auto px-6 py-8">
+        <Button variant="glass" onClick={onBack} className="mb-6">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+        </Button>
+
+        <Card className="p-6">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold">Create Your Profile</CardTitle>
+            <CardDescription>Fill out your info to find meaningful matches</CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
               
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Enter your full name"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="yearOfStudy">Year of Study / Experience</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, yearOfStudy: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1st-year">1st Year</SelectItem>
-                      <SelectItem value="2nd-year">2nd Year</SelectItem>
-                      <SelectItem value="3rd-year">3rd Year</SelectItem>
-                      <SelectItem value="final-year">Final Year</SelectItem>
-                      <SelectItem value="alumni">Alumni</SelectItem>
-                      <SelectItem value="professional">Professional</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              {/* Basic Info */}
+              <div>
+                <Label>Name</Label>
+                <Input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))} required />
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="domain">Domain Knowledge Area</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, domainKnowledge: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select domain" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="tech">Technology</SelectItem>
-                      <SelectItem value="business">Business</SelectItem>
-                      <SelectItem value="analytics">Analytics</SelectItem>
-                      <SelectItem value="creativity">Creativity</SelectItem>
-                      <SelectItem value="management">Management</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="workingStyle">Working Style</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, workingStyle: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select style" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="individualist">Individualist</SelectItem>
-                      <SelectItem value="team-player">Team Player</SelectItem>
-                      <SelectItem value="leader">Leader</SelectItem>
-                      <SelectItem value="creative-thinker">Creative Thinker</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label>Year of Study / Experience</Label>
+                <Select onValueChange={value => setFormData(prev => ({ ...prev, yearOfStudy: value }))}>
+                  <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1st-year">1st Year</SelectItem>
+                    <SelectItem value="2nd-year">2nd Year</SelectItem>
+                    <SelectItem value="3rd-year">3rd Year</SelectItem>
+                    <SelectItem value="final-year">Final Year</SelectItem>
+                    <SelectItem value="alumni">Alumni</SelectItem>
+                    <SelectItem value="professional">Professional</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              {/* Essential Personal Information */}
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="gender">Gender</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select gender" />
-                    </SelectTrigger>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Date of Birth</Label>
+                  <Input type="date" value={formData.dateOfBirth} onChange={e => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))} required />
+                </div>
+
+                <div>
+                  <Label>Gender</Label>
+                  <Select onValueChange={value => setFormData(prev => ({ ...prev, gender: value }))}>
+                    <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="male">Male</SelectItem>
                       <SelectItem value="female">Female</SelectItem>
@@ -296,177 +177,41 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
                     </SelectContent>
                   </Select>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                  <Input
-                    id="dateOfBirth"
-                    type="date"
-                    value={formData.dateOfBirth}
-                    onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="location">Location (City)</Label>
-                  <Input
-                    id="location"
-                    value={formData.location}
-                    onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                    placeholder="e.g., New York, London, Mumbai"
-                    required
-                  />
-                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="occupation">Occupation/Field of Study</Label>
-                <Input
-                  id="occupation"
-                  value={formData.occupation}
-                  onChange={(e) => setFormData(prev => ({ ...prev, occupation: e.target.value }))}
-                  placeholder="e.g., Software Engineer, Computer Science Student, Data Analyst"
-                  required
-                />
+              <div>
+                <Label>Location</Label>
+                <Input value={formData.location} onChange={e => setFormData(prev => ({ ...prev, location: e.target.value }))} required />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="bio">Bio (Short Description)</Label>
-                <Textarea
-                  id="bio"
-                  value={formData.bio}
-                  onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                  placeholder="Tell potential matches about yourself in a few sentences..."
-                  className="min-h-24"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Matching Preferences */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Heart className="h-5 w-5 text-primary" />
-                <h3 className="text-xl font-semibold">Matching Preferences</h3>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Preferred Gender for Matches</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ 
-                    ...prev, 
-                    matchPreferences: { ...prev.matchPreferences, genderPreference: value }
-                  }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select preference" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">Any</SelectItem>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="non-binary">Non-binary</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label>Location Range for Matches</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ 
-                    ...prev, 
-                    matchPreferences: { ...prev.matchPreferences, locationRange: value }
-                  }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select range" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="same-city">Same city</SelectItem>
-                      <SelectItem value="same-region">Same region/state</SelectItem>
-                      <SelectItem value="same-country">Same country</SelectItem>
-                      <SelectItem value="anywhere">Anywhere</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <Label>Occupation / Field</Label>
+                <Input value={formData.occupation} onChange={e => setFormData(prev => ({ ...prev, occupation: e.target.value }))} required />
               </div>
 
-              <div className="space-y-4">
-                <Label>Age Range for Matches</Label>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm text-muted-foreground">Minimum Age</Label>
-                    <Input
-                      type="number"
-                      min={18}
-                      max={100}
-                      value={formData.matchPreferences.ageRangeMin}
-                      onChange={(e) => setFormData(prev => ({ 
-                        ...prev, 
-                        matchPreferences: { 
-                          ...prev.matchPreferences, 
-                          ageRangeMin: parseInt(e.target.value) || 18 
-                        }
-                      }))}
-                    />
+              <div>
+                <Label>Bio</Label>
+                <Textarea value={formData.bio} onChange={e => setFormData(prev => ({ ...prev, bio: e.target.value }))} required />
+              </div>
+
+              {/* Skills */}
+              <div>
+                <Label>Skills (1-5)</Label>
+                {Object.entries(formData.skills).map(([skill, value]) => (
+                  <div key={skill} className="flex items-center gap-2">
+                    <span className="w-32">{skill}</span>
+                    <Slider value={[value]} max={5} min={1} step={1} onValueChange={val => handleSkillChange(skill as keyof typeof formData.skills, val)} />
+                    <span>{value}/5</span>
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm text-muted-foreground">Maximum Age</Label>
-                    <Input
-                      type="number"
-                      min={18}
-                      max={100}
-                      value={formData.matchPreferences.ageRangeMax}
-                      onChange={(e) => setFormData(prev => ({ 
-                        ...prev, 
-                        matchPreferences: { 
-                          ...prev.matchPreferences, 
-                          ageRangeMax: parseInt(e.target.value) || 65 
-                        }
-                      }))}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
-            </div>
 
-            {/* Skills Assessment */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Brain className="h-5 w-5 text-primary" />
-                <h3 className="text-xl font-semibold">Skills Assessment</h3>
-              </div>
-              
-              {Object.entries(formData.skills).map(([skill, value]) => (
-                <div key={skill} className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <Label className="text-base">{skill}</Label>
-                    <span className="text-sm font-medium text-primary">{value}/5</span>
-                  </div>
-                  <Slider
-                    value={[value]}
-                    onValueChange={(val) => handleSkillChange(skill as keyof typeof formData.skills, val)}
-                    max={5}
-                    min={1}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Personality & Preferences */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Heart className="h-5 w-5 text-primary" />
-                <h3 className="text-xl font-semibold">Personality & Preferences</h3>
-              </div>
-              
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="space-y-2">
+              {/* Personality */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
                   <Label>Personality Type</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, personalityType: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
+                  <Select onValueChange={v => setFormData(prev => ({ ...prev, personalityType: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="introvert">Introvert</SelectItem>
                       <SelectItem value="extrovert">Extrovert</SelectItem>
@@ -474,13 +219,11 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
                     </SelectContent>
                   </Select>
                 </div>
-                
-                <div className="space-y-2">
+
+                <div>
                   <Label>Communication Style</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, communicationStyle: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select style" />
-                    </SelectTrigger>
+                  <Select onValueChange={v => setFormData(prev => ({ ...prev, communicationStyle: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="visual">Visual</SelectItem>
                       <SelectItem value="verbal">Verbal</SelectItem>
@@ -489,13 +232,11 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
                     </SelectContent>
                   </Select>
                 </div>
-                
-                <div className="space-y-2">
+
+                <div>
                   <Label>Decision Making</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, decisionMaking: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select approach" />
-                    </SelectTrigger>
+                  <Select onValueChange={v => setFormData(prev => ({ ...prev, decisionMaking: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="data-driven">Data-driven</SelectItem>
                       <SelectItem value="intuitive">Intuitive</SelectItem>
@@ -505,91 +246,89 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
                   </Select>
                 </div>
               </div>
-            </div>
 
-            {/* Interests & Goals */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Target className="h-5 w-5 text-primary" />
-                <h3 className="text-xl font-semibold">Interests & Goals</h3>
+              {/* Interests & Event Goals */}
+              <div>
+                <Label>Interests</Label>
+                <Textarea value={formData.interests} onChange={e => setFormData(prev => ({ ...prev, interests: e.target.value }))} />
               </div>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="techBuzzword">Favorite Tech Buzzword</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, techBuzzword: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select buzzword" />
-                    </SelectTrigger>
+
+              <div>
+                <Label>Favorite Tech Buzzword</Label>
+                <Select onValueChange={v => setFormData(prev => ({ ...prev, techBuzzword: v }))}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AI">AI</SelectItem>
+                    <SelectItem value="Blockchain">Blockchain</SelectItem>
+                    <SelectItem value="Metaverse">Metaverse</SelectItem>
+                    <SelectItem value="IoT">IoT</SelectItem>
+                    <SelectItem value="Quantum">Quantum</SelectItem>
+                    <SelectItem value="Cloud">Cloud</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Goal for Event</Label>
+                <Select onValueChange={v => setFormData(prev => ({ ...prev, eventGoal: v }))}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="networking">Networking</SelectItem>
+                    <SelectItem value="fun">Fun</SelectItem>
+                    <SelectItem value="collaboration">Collaboration</SelectItem>
+                    <SelectItem value="learning">Learning</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Additional Hobbies</Label>
+                <Input value={formData.hobbies} onChange={e => setFormData(prev => ({ ...prev, hobbies: e.target.value }))} />
+              </div>
+
+              <div>
+                <Label>Additional Info</Label>
+                <Textarea value={formData.additionalInfo} onChange={e => setFormData(prev => ({ ...prev, additionalInfo: e.target.value }))} />
+              </div>
+
+              {/* Matching Preferences */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Preferred Gender for Matches</Label>
+                  <Select onValueChange={v => setFormData(prev => ({ ...prev, matchPreferences: { ...prev.matchPreferences, genderPreference: v } }))}>
+                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="AI">AI</SelectItem>
-                      <SelectItem value="Blockchain">Blockchain</SelectItem>
-                      <SelectItem value="Metaverse">Metaverse</SelectItem>
-                      <SelectItem value="IoT">IoT</SelectItem>
-                      <SelectItem value="Quantum">Quantum</SelectItem>
-                      <SelectItem value="Cloud">Cloud</SelectItem>
+                      <SelectItem value="any">Any</SelectItem>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="non-binary">Non-binary</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="eventGoal">Goal for Event</Label>
-                  <Select onValueChange={(value) => setFormData(prev => ({ ...prev, eventGoal: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select goal" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="networking">Networking</SelectItem>
-                      <SelectItem value="fun">Fun</SelectItem>
-                      <SelectItem value="collaboration">Collaboration</SelectItem>
-                      <SelectItem value="learning">Learning</SelectItem>
-                    </SelectContent>
-                  </Select>
+
+                <div>
+                  <Label>Preferred Age Range</Label>
+                  <div className="flex gap-2">
+                    <Input type="number" value={formData.matchPreferences.ageRangeMin} onChange={e => setFormData(prev => ({ ...prev, matchPreferences: { ...prev.matchPreferences, ageRangeMin: parseInt(e.target.value) } }))} placeholder="Min" />
+                    <Input type="number" value={formData.matchPreferences.ageRangeMax} onChange={e => setFormData(prev => ({ ...prev, matchPreferences: { ...prev.matchPreferences, ageRangeMax: parseInt(e.target.value) } }))} placeholder="Max" />
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label>Preferred Location for Matches</Label>
+                  <Input value={formData.matchPreferences.locationRange} onChange={e => setFormData(prev => ({ ...prev, matchPreferences: { ...prev.matchPreferences, locationRange: e.target.value } }))} />
                 </div>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="interests">Interests & Hobbies</Label>
-                <Textarea
-                  id="interests"
-                  value={formData.interests}
-                  onChange={(e) => setFormData(prev => ({ ...prev, interests: e.target.value }))}
-                  placeholder="e.g., Startups, Gaming, Art, Data Science, Music, Sports..."
-                  className="min-h-20"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="hobbies">Additional Hobbies</Label>
-                <Input
-                  id="hobbies"
-                  value={formData.hobbies}
-                  onChange={(e) => setFormData(prev => ({ ...prev, hobbies: e.target.value }))}
-                  placeholder="e.g., Photography, Cooking, Travel, Reading..."
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="additionalInfo">Additional Information</Label>
-                <Textarea
-                  id="additionalInfo"
-                  value={formData.additionalInfo}
-                  onChange={(e) => setFormData(prev => ({ ...prev, additionalInfo: e.target.value }))}
-                  placeholder="Anything else you'd like potential matches to know..."
-                  className="min-h-20"
-                />
-              </div>
-            </div>
 
-            <div className="flex justify-center pt-6">
-              <Button type="submit" variant="professional" size="lg" className="min-w-48">
-                <Sparkles className="mr-2 h-5 w-5" />
-                Submit Profile
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              <div className="flex justify-center">
+                <Button type="submit" variant="professional">
+                  <Sparkles className="mr-2 h-5 w-5" /> Save Profile
+                </Button>
+              </div>
+
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
