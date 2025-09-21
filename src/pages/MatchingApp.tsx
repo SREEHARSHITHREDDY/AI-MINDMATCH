@@ -33,7 +33,7 @@ export function MatchingApp({ onSignOut }: MatchingAppProps) {
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('id', user.id)
         .single();
       
       setUser({ ...user, profile });
@@ -68,7 +68,7 @@ export function MatchingApp({ onSignOut }: MatchingAppProps) {
             <h2 className="text-3xl font-bold mb-2">It's a Match! 🎉</h2>
             <div className="flex items-center justify-center gap-4 mb-4">
               <Avatar className="w-16 h-16">
-                <AvatarFallback>{user?.profile?.name?.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{user?.profile?.full_name?.charAt(0)}</AvatarFallback>
               </Avatar>
               <Heart className="w-8 h-8 text-red-300" />
               <Avatar className="w-16 h-16">
@@ -105,9 +105,9 @@ export function MatchingApp({ onSignOut }: MatchingAppProps) {
 
           <div className="flex items-center gap-3">
             <Avatar className="w-10 h-10">
-              <AvatarFallback>{user?.profile?.name?.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{user?.profile?.full_name?.charAt(0)}</AvatarFallback>
             </Avatar>
-            <span className="font-medium">{user?.profile?.name}</span>
+            <span className="font-medium">{user?.profile?.full_name}</span>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="w-4 h-4" />
             </Button>
@@ -178,10 +178,10 @@ export function MatchingApp({ onSignOut }: MatchingAppProps) {
               <div className="text-center">
                 <Avatar className="w-24 h-24 mx-auto mb-4">
                   <AvatarFallback className="text-2xl">
-                    {user?.profile?.name?.charAt(0)}
+                    {user?.profile?.full_name?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <h2 className="text-2xl font-bold mb-2">{user?.profile?.name}</h2>
+                <h2 className="text-2xl font-bold mb-2">{user?.profile?.full_name}</h2>
                 <p className="text-muted-foreground mb-4">{user?.profile?.bio}</p>
                 
                 <div className="grid md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">

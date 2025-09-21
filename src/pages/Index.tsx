@@ -39,7 +39,7 @@ const Index = () => {
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', userId)
+        .eq('id', userId)
         .single();
 
       setUserProfile(profile);

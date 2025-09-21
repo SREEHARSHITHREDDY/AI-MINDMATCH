@@ -124,24 +124,75 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age_range_max: number | null
+          age_range_min: number | null
           avatar_url: string | null
+          bio: string | null
+          completed_steps: string[] | null
+          date_of_birth: string | null
+          dealbreakers: string[] | null
           email: string | null
           full_name: string | null
+          hangout_activities: string[] | null
+          hobbies: string[] | null
           id: string
+          important_values: string[] | null
+          industry_field: string | null
+          interests: string[] | null
+          lifestyle_interests: string[] | null
+          personality_traits: string[] | null
+          profile_picture_url: string | null
+          purpose: string | null
+          relationship_goals: string[] | null
+          skills: string[] | null
           updated_at: string | null
         }
         Insert: {
+          age_range_max?: number | null
+          age_range_min?: number | null
           avatar_url?: string | null
+          bio?: string | null
+          completed_steps?: string[] | null
+          date_of_birth?: string | null
+          dealbreakers?: string[] | null
           email?: string | null
           full_name?: string | null
+          hangout_activities?: string[] | null
+          hobbies?: string[] | null
           id: string
+          important_values?: string[] | null
+          industry_field?: string | null
+          interests?: string[] | null
+          lifestyle_interests?: string[] | null
+          personality_traits?: string[] | null
+          profile_picture_url?: string | null
+          purpose?: string | null
+          relationship_goals?: string[] | null
+          skills?: string[] | null
           updated_at?: string | null
         }
         Update: {
+          age_range_max?: number | null
+          age_range_min?: number | null
           avatar_url?: string | null
+          bio?: string | null
+          completed_steps?: string[] | null
+          date_of_birth?: string | null
+          dealbreakers?: string[] | null
           email?: string | null
           full_name?: string | null
+          hangout_activities?: string[] | null
+          hobbies?: string[] | null
           id?: string
+          important_values?: string[] | null
+          industry_field?: string | null
+          interests?: string[] | null
+          lifestyle_interests?: string[] | null
+          personality_traits?: string[] | null
+          profile_picture_url?: string | null
+          purpose?: string | null
+          relationship_goals?: string[] | null
+          skills?: string[] | null
           updated_at?: string | null
         }
         Relationships: []

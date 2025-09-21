@@ -182,6 +182,6 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       );
     
     default:
-      return <WelcomePage onGetStarted={() => setCurrentStep('basic-info')} />;
+      return <WelcomePage onGetStarted={() => setCurrentStep('auth')} />;
   }
 }

@@ -34,7 +34,7 @@ export function MatchFeed({ onMatchFound }: MatchFeedProps) {
       const mockMatches: MatchProfile[] =
         profiles?.map((profile) => ({
           id: profile.id,
-          name: profile.name || "Anonymous",
+          name: profile.full_name || "Anonymous",
           age: profile.date_of_birth
             ? Math.floor(
                 (Date.now() - new Date(profile.date_of_birth).getTime()) /
