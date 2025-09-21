@@ -1,7 +1,12 @@
-// src/supabase/supabaseClient.ts
+// src/lib/supabaseClient.ts
 import { createClient } from "@supabase/supabase-js";
 
+// Use environment variables from .env
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL!;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!; // <-- corrected key
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY!;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error("Supabase URL or Anon Key is missing! Please check your .env file.");
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
