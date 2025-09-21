@@ -2,11 +2,36 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface ProfileData {
   name: string;
+  yearOfStudy: string;
+  domainKnowledge: string;
+  workingStyle: string;
+  personalityType: string;
+  communicationStyle: string;
+  decisionMaking: string;
+  techBuzzword: string;
+  hobbies: string;
+  skills: {
+    AI: number;
+    Finance: number;
+    Design: number;
+    Marketing: number;
+    Programming: number;
+  };
+  interests: string;
+  eventGoal: string;
+  additionalInfo: string;
+  // New essential fields
+  gender: string;
+  dateOfBirth: string;
+  location: string;
+  occupation: string;
   bio: string;
-  lifestyle_interests: string[];
-  purpose: string;
-  interests: string[];
-  hobbies: string[];
+  matchPreferences: {
+    genderPreference: string;
+    ageRangeMin: number;
+    ageRangeMax: number;
+    locationRange: string;
+  };
 }
 
 export const saveProfile = async (profileData: ProfileData) => {
@@ -19,19 +44,52 @@ export const saveProfile = async (profileData: ProfileData) => {
   const { data, error } = await supabase
     .from('profiles')
     .update({
-      full_name: profileData.name,
-      bio: profileData.bio,
-      lifestyle_interests: profileData.lifestyle_interests,
-      purpose: profileData.purpose,
-      interests: profileData.interests,
+      name: profileData.name,
+      year_of_study: profileData.yearOfStudy,
+      domain_knowledge: profileData.domainKnowledge,
+      working_style: profileData.workingStyle,
+      personality_type: profileData.personalityType,
+      communication_style: profileData.communicationStyle,
+      decision_making: profileData.decisionMaking,
+      tech_buzzword: profileData.techBuzzword,
       hobbies: profileData.hobbies,
+      interests: profileData.interests,
+      event_goal: profileData.eventGoal,
+      additional_info: profileData.additionalInfo,
+      skills: profileData.skills,
+      // New essential fields
+      gender: profileData.gender,
+      date_of_birth: profileData.dateOfBirth,
+      location: profileData.location,
+      occupation: profileData.occupation,
+      bio: profileData.bio,
+      match_preferences: profileData.matchPreferences,
     })
-    .eq('id', user.id)
+    .eq('user_id', user.id)
     .select()
     .single();
 
   if (error) {
     throw error;
+  }
+
+  // Register for the current event
+  const { data: currentEvent } = await supabase
+    .from('events')
+    .select('id')
+    .eq('matching_completed', false)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (currentEvent && data) {
+    await supabase
+      .from('event_registrations')
+      .insert({
+        event_id: currentEvent.id,
+        user_id: user.id,
+        profile_id: data.id,
+      });
   }
 
   return data;
@@ -47,7 +105,7 @@ export const getProfile = async () => {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
-    .eq('id', user.id)
+    .eq('user_id', user.id)
     .single();
 
   if (error) {
