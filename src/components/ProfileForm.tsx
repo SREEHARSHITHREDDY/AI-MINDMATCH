@@ -1,6 +1,6 @@
 // src/components/ProfileForm.tsx
 import { useState } from "react";
-import { supabase } from "../supabase/supabaseClient";
+import { supabase } from "../lib/supabaseClient"; 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { User, Brain, Heart, Target, Sparkles, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
 interface ProfileData {
   name: string;
@@ -80,10 +80,20 @@ export function ProfileForm({ onBack }: ProfileFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Get current logged-in user
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    const userId = userData?.user?.id;
+
+    if (!userId) {
+      alert("User not logged in.");
+      return;
+    }
+
     // Save data to Supabase
     const { data, error } = await supabase
       .from("profiles")
       .upsert({
+        user_id: userId, // important for unique constraint
         name: formData.name,
         year_of_study: formData.yearOfStudy,
         domain_knowledge: formData.domainKnowledge,
@@ -102,7 +112,7 @@ export function ProfileForm({ onBack }: ProfileFormProps) {
         event_goal: formData.eventGoal,
         additional_info: formData.additionalInfo,
         gender: formData.gender,
-        date_of_birth: formData.dateOfBirth,
+        date_of_birth: formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString() : null,
         location: formData.location,
         occupation: formData.occupation,
         bio: formData.bio,
@@ -155,7 +165,6 @@ export function ProfileForm({ onBack }: ProfileFormProps) {
                 />
               </div>
 
-              {/* Example: Skills Slider */}
               {Object.entries(formData.skills).map(([skill, value]) => (
                 <div key={skill} className="space-y-1">
                   <Label>{skill}</Label>
