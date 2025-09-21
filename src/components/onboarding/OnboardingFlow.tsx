@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WelcomePage } from "./WelcomePage";
-import { BasicInfoStep } from "./BasicInfoStep";
+import { AuthPage } from "../auth/AuthPage";
 import { PurposeStep } from "./PurposeStep";
 import { PersonalDetailsStep } from "./PersonalDetailsStep";
 import { LifestyleStep } from "./LifestyleStep";
@@ -14,46 +14,33 @@ interface OnboardingFlowProps {
   onComplete: () => void;
 }
 
-type OnboardingStep = 'welcome' | 'basic-info' | 'purpose' | 'personal-details' | 'lifestyle' | 'values' | 'ai-matching';
+type OnboardingStep = 'welcome' | 'auth' | 'purpose' | 'personal-details' | 'lifestyle' | 'values' | 'ai-matching';
 
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome');
   const [onboardingData, setOnboardingData] = useState<Partial<OnboardingData>>({});
+  const [user, setUser] = useState<any>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user && currentStep === 'auth') {
+        setCurrentStep('purpose');
+      }
+    };
+    checkUser();
+  }, [currentStep]);
 
   const updateData = (stepData: Partial<OnboardingData>) => {
     setOnboardingData(prev => ({ ...prev, ...stepData }));
   };
 
-  const handleSignUp = async (basicInfo: any) => {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: basicInfo.email,
-        password: basicInfo.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            name: basicInfo.name,
-          }
-        }
-      });
-
-      if (error) throw error;
-
-      updateData(basicInfo);
-      setCurrentStep('purpose');
-      
-      toast({
-        title: "Account created!",
-        description: "Let's continue setting up your profile.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Sign up failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+  const handleAuthSuccess = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+    setCurrentStep('purpose');
   };
 
   const handleComplete = async (finalData: any) => {
@@ -67,10 +54,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       const { error } = await supabase
         .from('profiles')
         .update({
-          name: completeProfile.name,
-          gender: completeProfile.gender,
-          date_of_birth: completeProfile.date_of_birth,
-          bio: completeProfile.bio,
+          full_name: user.user_metadata?.name || completeProfile.name,
           purpose: completeProfile.purpose,
           relationship_goals: completeProfile.relationship_goals,
           hangout_activities: completeProfile.hangout_activities,
@@ -84,18 +68,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           hobbies: completeProfile.hobbies,
           age_range_min: completeProfile.age_range_min,
           age_range_max: completeProfile.age_range_max,
-          completed_steps: ['basic-info', 'purpose', 'personal-details', 'lifestyle', 'values', 'ai-matching'],
-          // Legacy fields for compatibility
-          year_of_study: 'completed-onboarding',
-          domain_knowledge: completeProfile.purpose,
-          working_style: 'modern',
-          personality_type: completeProfile.personality_traits?.[0] || 'adaptive',
-          communication_style: 'effective',
-          decision_making: 'collaborative',
-          tech_buzzword: 'AI-powered',
-          event_goal: 'meaningful-connections',
+          completed_steps: ['auth', 'purpose', 'personal-details', 'lifestyle', 'values', 'ai-matching'],
         })
-        .eq('user_id', user.id);
+        .eq('id', user.id);
 
       if (error) throw error;
 
@@ -117,7 +92,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const goBack = () => {
     switch (currentStep) {
       case 'purpose':
-        setCurrentStep('basic-info');
+        setCurrentStep('auth');
         break;
       case 'personal-details':
         setCurrentStep('purpose');
@@ -139,13 +114,12 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
   switch (currentStep) {
     case 'welcome':
-      return <WelcomePage onGetStarted={() => setCurrentStep('basic-info')} />;
+      return <WelcomePage onGetStarted={() => setCurrentStep('auth')} />;
     
-    case 'basic-info':
+    case 'auth':
       return (
-        <BasicInfoStep 
-          onNext={handleSignUp}
-          initialData={onboardingData}
+        <AuthPage 
+          onAuthSuccess={handleAuthSuccess}
         />
       );
     
