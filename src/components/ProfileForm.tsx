@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { User, Brain, Target, Heart, Sparkles, ArrowLeft } from "lucide-react";
 
@@ -43,8 +42,19 @@ interface ProfileData {
   };
 }
 
+interface SubmitPayload {
+  full_name?: string | null;
+  bio?: string | null;
+  // arrays must be text[] on DB side
+  lifestyle_interests?: string[];        // e.g. ["Music","Travel"]
+  relationship_preferences?: string[];   // e.g. ["Any","Female"]
+  profile_picture_url?: string | null;
+  // optional: include a metadata JSON if you want to keep the rest of the form
+  meta?: Record<string, any>;
+}
+
 interface ProfileFormProps {
-  onSubmit: (data: ProfileData) => Promise<void>;
+  onSubmit: (data: SubmitPayload) => Promise<void>;
   onBack: () => void;
 }
 
@@ -93,12 +103,69 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
     }));
   };
 
+  // Utility: split a comma/line separated string into trimmed array, removing empties
+  const normalizeToArray = (input?: string) => {
+    if (!input) return [];
+    // split by comma or newline
+    return input
+      .split(/[\n,]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Build a safe payload that matches typical `profiles` table columns
+    const payload: SubmitPayload = {
+      full_name: formData.name || null,
+      bio: formData.bio || null,
+      // Map interests/hobbies -> lifestyle_interests (DB expects text[])
+      lifestyle_interests: [
+        ...normalizeToArray(formData.interests),
+        ...normalizeToArray(formData.hobbies)
+      ].filter(Boolean),
+      // Map gender preference into relationship_preferences (as an example)
+      relationship_preferences: formData.matchPreferences.genderPreference
+        ? [formData.matchPreferences.genderPreference]
+        : [],
+      profile_picture_url: null, // no upload in this form
+      // Put the rest of the complex fields into meta for future use (jsonb column if you have one)
+      meta: {
+        yearOfStudy: formData.yearOfStudy || null,
+        domainKnowledge: formData.domainKnowledge || null,
+        workingStyle: formData.workingStyle || null,
+        personalityType: formData.personalityType || null,
+        communicationStyle: formData.communicationStyle || null,
+        decisionMaking: formData.decisionMaking || null,
+        techBuzzword: formData.techBuzzword || null,
+        skills: formData.skills,
+        eventGoal: formData.eventGoal || null,
+        additionalInfo: formData.additionalInfo || null,
+        gender: formData.gender || null,
+        dateOfBirth: formData.dateOfBirth || null,
+        location: formData.location || null,
+        occupation: formData.occupation || null,
+        matchPreferences: {
+          ageRangeMin: Number(formData.matchPreferences.ageRangeMin) || 18,
+          ageRangeMax: Number(formData.matchPreferences.ageRangeMax) || 65,
+          locationRange: formData.matchPreferences.locationRange || null
+        }
+      }
+    };
+
+    // Ensure arrays are real arrays (not empty-string)
+    if (!payload.lifestyle_interests) payload.lifestyle_interests = [];
+    if (!payload.relationship_preferences) payload.relationship_preferences = [];
+
     try {
-      await onSubmit(formData);
-    } catch (error) {
+      // Call the provided onSubmit with sanitized payload
+      await onSubmit(payload);
+    } catch (error: any) {
+      // Log full error to console — helpful for debugging server response
       console.error('Error submitting profile:', error);
+      // Re-throw or handle UI toast here as needed
+      throw error;
     }
   };
 
@@ -329,8 +396,8 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
                     <Label className="text-sm text-muted-foreground">Minimum Age</Label>
                     <Input
                       type="number"
-                      min="18"
-                      max="100"
+                      min={18}
+                      max={100}
                       value={formData.matchPreferences.ageRangeMin}
                       onChange={(e) => setFormData(prev => ({ 
                         ...prev, 
@@ -345,8 +412,8 @@ export function ProfileForm({ onSubmit, onBack }: ProfileFormProps) {
                     <Label className="text-sm text-muted-foreground">Maximum Age</Label>
                     <Input
                       type="number"
-                      min="18"
-                      max="100"
+                      min={18}
+                      max={100}
                       value={formData.matchPreferences.ageRangeMax}
                       onChange={(e) => setFormData(prev => ({ 
                         ...prev, 
