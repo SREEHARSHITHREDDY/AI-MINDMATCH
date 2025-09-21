@@ -29,24 +29,36 @@ export const saveProfile = async (profileData: ProfileData) => {
     throw new Error('User not authenticated');
   }
 
+  // Convert the nested skills object to individual skill columns
+  const profilePayload = {
+    id: user.id, // Use user.id as the primary key
+    user_id: user.id, // Also set user_id for compatibility
+    name: profileData.name,
+    year_of_study: profileData.yearOfStudy,
+    domain_knowledge: profileData.domainKnowledge,
+    working_style: profileData.workingStyle,
+    personality_type: profileData.personalityType,
+    communication_style: profileData.communicationStyle,
+    decision_making: profileData.decisionMaking,
+    tech_buzzword: profileData.techBuzzword,
+    hobbies: profileData.hobbies,
+    interests: profileData.interests,
+    event_goal: profileData.eventGoal,
+    additional_info: profileData.additionalInfo,
+    skills_ai: profileData.skills.AI,
+    skills_finance: profileData.skills.Finance,
+    skills_design: profileData.skills.Design,
+    skills_marketing: profileData.skills.Marketing,
+    skills_programming: profileData.skills.Programming,
+    updated_at: new Date().toISOString(),
+  };
+
+  // Use upsert to handle both insert and update cases
   const { data, error } = await supabase
     .from('profiles')
-    .update({
-      name: profileData.name,
-      year_of_study: profileData.yearOfStudy,
-      domain_knowledge: profileData.domainKnowledge,
-      working_style: profileData.workingStyle,
-      personality_type: profileData.personalityType,
-      communication_style: profileData.communicationStyle,
-      decision_making: profileData.decisionMaking,
-      tech_buzzword: profileData.techBuzzword,
-      hobbies: profileData.hobbies,
-      interests: profileData.interests,
-      event_goal: profileData.eventGoal,
-      additional_info: profileData.additionalInfo,
-      skills: profileData.skills,
+    .upsert(profilePayload, {
+      onConflict: 'id'
     })
-    .eq('user_id', user.id)
     .select()
     .single();
 
@@ -58,10 +70,9 @@ export const saveProfile = async (profileData: ProfileData) => {
   const { data: currentEvent } = await supabase
     .from('events')
     .select('id')
-    .eq('matching_completed', false)
     .order('created_at', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if (currentEvent && data) {
     await supabase
@@ -86,8 +97,8 @@ export const getProfile = async () => {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', user.id)
-    .single();
+    .eq('id', user.id)
+    .maybeSingle();
 
   if (error) {
     throw error;
