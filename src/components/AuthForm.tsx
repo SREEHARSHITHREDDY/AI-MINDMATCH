@@ -40,8 +40,21 @@ export function AuthForm({ onSuccess, onBack }: AuthFormProps) {
 
       toast({
         title: "Account Created!",
-        description: "Please check your email to verify your account, then sign in.",
+        description: "You can now sign in with your credentials.",
       });
+      
+      // If email confirmation is disabled, automatically sign in
+      if (!error) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        
+        if (!signInError) {
+          onSuccess();
+          return;
+        }
+      }
     } catch (error: any) {
       toast({
         title: "Error",
