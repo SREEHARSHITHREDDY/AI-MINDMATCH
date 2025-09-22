@@ -29,6 +29,7 @@ export function AuthForm({ onSuccess, onBack }: AuthFormProps) {
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             name: name,
           }
