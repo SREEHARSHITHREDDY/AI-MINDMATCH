@@ -36,50 +36,32 @@ export type Database = {
           profile_id?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "event_registrations_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_registrations_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       events: {
         Row: {
-          created_at: string
-          description: string | null
+          created_at: string | null
+          end_time: string | null
           id: string
-          matching_completed: boolean
           name: string
-          registration_deadline: string
-          updated_at: string
+          start_time: string | null
+          updated_at: string | null
         }
         Insert: {
-          created_at?: string
-          description?: string | null
+          created_at?: string | null
+          end_time?: string | null
           id?: string
-          matching_completed?: boolean
           name: string
-          registration_deadline: string
-          updated_at?: string
+          start_time?: string | null
+          updated_at?: string | null
         }
         Update: {
-          created_at?: string
-          description?: string | null
+          created_at?: string | null
+          end_time?: string | null
           id?: string
-          matching_completed?: boolean
           name?: string
-          registration_deadline?: string
-          updated_at?: string
+          start_time?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -113,63 +95,239 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          read: boolean | null
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          read?: boolean | null
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          read?: boolean | null
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           additional_info: string | null
-          communication_style: string
-          created_at: string
-          decision_making: string
-          domain_knowledge: string
-          event_goal: string
-          hobbies: string | null
+          age_range_max: number | null
+          age_range_min: number | null
+          avatar_url: string | null
+          bio: string | null
+          communication_style: string | null
+          completed_steps: string[] | null
+          date_of_birth: string | null
+          dealbreakers: string[] | null
+          decision_making: string | null
+          domain_knowledge: string | null
+          email: string | null
+          event_goal: string | null
+          full_name: string | null
+          gender: string | null
+          hangout_activities: string[] | null
+          hobbies: string[] | null
           id: string
-          interests: string
-          name: string
-          personality_type: string
-          skills: Json
-          tech_buzzword: string
-          updated_at: string
-          user_id: string
-          working_style: string
-          year_of_study: string
+          important_values: string[] | null
+          industry_field: string | null
+          interests: string[] | null
+          lifestyle_interests: string[] | null
+          location: string | null
+          match_preferences_age_max: number | null
+          match_preferences_age_min: number | null
+          match_preferences_gender: string | null
+          match_preferences_location: string | null
+          name: string | null
+          occupation: string | null
+          personality_traits: string[] | null
+          personality_type: string | null
+          profile_picture_url: string | null
+          purpose: string | null
+          relationship_goals: string[] | null
+          relationship_preferences: string[] | null
+          skills: string[] | null
+          skills_ai: number | null
+          skills_design: number | null
+          skills_finance: number | null
+          skills_marketing: number | null
+          skills_programming: number | null
+          tech_buzzword: string | null
+          updated_at: string | null
+          user_id: string | null
+          working_style: string | null
+          year_of_study: string | null
         }
         Insert: {
           additional_info?: string | null
-          communication_style: string
-          created_at?: string
-          decision_making: string
-          domain_knowledge: string
-          event_goal: string
-          hobbies?: string | null
-          id?: string
-          interests: string
-          name: string
-          personality_type: string
-          skills?: Json
-          tech_buzzword: string
-          updated_at?: string
-          user_id: string
-          working_style: string
-          year_of_study: string
+          age_range_max?: number | null
+          age_range_min?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          communication_style?: string | null
+          completed_steps?: string[] | null
+          date_of_birth?: string | null
+          dealbreakers?: string[] | null
+          decision_making?: string | null
+          domain_knowledge?: string | null
+          email?: string | null
+          event_goal?: string | null
+          full_name?: string | null
+          gender?: string | null
+          hangout_activities?: string[] | null
+          hobbies?: string[] | null
+          id: string
+          important_values?: string[] | null
+          industry_field?: string | null
+          interests?: string[] | null
+          lifestyle_interests?: string[] | null
+          location?: string | null
+          match_preferences_age_max?: number | null
+          match_preferences_age_min?: number | null
+          match_preferences_gender?: string | null
+          match_preferences_location?: string | null
+          name?: string | null
+          occupation?: string | null
+          personality_traits?: string[] | null
+          personality_type?: string | null
+          profile_picture_url?: string | null
+          purpose?: string | null
+          relationship_goals?: string[] | null
+          relationship_preferences?: string[] | null
+          skills?: string[] | null
+          skills_ai?: number | null
+          skills_design?: number | null
+          skills_finance?: number | null
+          skills_marketing?: number | null
+          skills_programming?: number | null
+          tech_buzzword?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          working_style?: string | null
+          year_of_study?: string | null
         }
         Update: {
           additional_info?: string | null
-          communication_style?: string
-          created_at?: string
-          decision_making?: string
-          domain_knowledge?: string
-          event_goal?: string
-          hobbies?: string | null
+          age_range_max?: number | null
+          age_range_min?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          communication_style?: string | null
+          completed_steps?: string[] | null
+          date_of_birth?: string | null
+          dealbreakers?: string[] | null
+          decision_making?: string | null
+          domain_knowledge?: string | null
+          email?: string | null
+          event_goal?: string | null
+          full_name?: string | null
+          gender?: string | null
+          hangout_activities?: string[] | null
+          hobbies?: string[] | null
           id?: string
-          interests?: string
-          name?: string
-          personality_type?: string
-          skills?: Json
-          tech_buzzword?: string
+          important_values?: string[] | null
+          industry_field?: string | null
+          interests?: string[] | null
+          lifestyle_interests?: string[] | null
+          location?: string | null
+          match_preferences_age_max?: number | null
+          match_preferences_age_min?: number | null
+          match_preferences_gender?: string | null
+          match_preferences_location?: string | null
+          name?: string | null
+          occupation?: string | null
+          personality_traits?: string[] | null
+          personality_type?: string | null
+          profile_picture_url?: string | null
+          purpose?: string | null
+          relationship_goals?: string[] | null
+          relationship_preferences?: string[] | null
+          skills?: string[] | null
+          skills_ai?: number | null
+          skills_design?: number | null
+          skills_finance?: number | null
+          skills_marketing?: number | null
+          skills_programming?: number | null
+          tech_buzzword?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          working_style?: string | null
+          year_of_study?: string | null
+        }
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: never
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: never
+          status?: string
           updated_at?: string
           user_id?: string
-          working_style?: string
-          year_of_study?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          message_content: string | null
+          target_user_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          message_content?: string | null
+          target_user_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          message_content?: string | null
+          target_user_id?: string
+          user_id?: string
         }
         Relationships: []
       }

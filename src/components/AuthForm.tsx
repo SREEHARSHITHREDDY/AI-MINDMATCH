@@ -25,7 +25,7 @@ export function AuthForm({ onSuccess, onBack }: AuthFormProps) {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -38,13 +38,19 @@ export function AuthForm({ onSuccess, onBack }: AuthFormProps) {
 
       if (error) throw error;
 
-      toast({
-        title: "Account Created!",
-        description: "You can now sign in with your credentials.",
-      });
-      
-      // If email confirmation is disabled, automatically sign in
-      if (!error) {
+      // If user is returned and confirmed immediately, proceed
+      if (data.user && !data.user.email_confirmed_at) {
+        toast({
+          title: "Account Created!",
+          description: "Since email confirmation is enabled, please check your email and click the verification link, then try signing in.",
+        });
+      } else {
+        // User is confirmed immediately, try to sign in
+        toast({
+          title: "Account Created!",
+          description: "You can now sign in with your credentials.",
+        });
+        
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -56,11 +62,19 @@ export function AuthForm({ onSuccess, onBack }: AuthFormProps) {
         }
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (error.message.includes('already registered')) {
+        toast({
+          title: "Account exists",
+          description: "This email is already registered. Please use the Sign In tab instead.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +90,12 @@ export function AuthForm({ onSuccess, onBack }: AuthFormProps) {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          throw new Error('Invalid email or password. If you just signed up, please check your email for a verification link first.');
+        }
+        throw error;
+      }
 
       toast({
         title: "Welcome back!",
@@ -86,7 +105,7 @@ export function AuthForm({ onSuccess, onBack }: AuthFormProps) {
       onSuccess();
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Sign In Error",
         description: error.message,
         variant: "destructive",
       });
